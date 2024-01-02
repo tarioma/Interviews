@@ -4,27 +4,23 @@ namespace Resumes.Domain.Events;
 
 public class RequestApprovedEvent : IEvent
 {
-    public Guid Id { get; private init; }
-    public string Data { get; private init; }
-    public Guid RequestId { get; private init; }
+    public Guid Id { get; }
+    public DateTime Date { get; }
+    public Guid RequestId { get; }
 
-    private RequestApprovedEvent(Guid id, string data, Guid requestId)
+    private RequestApprovedEvent(Guid id, Guid requestId)
     {
         EmptyGuidException.ThrowIfEmpty(id);
-        ArgumentException.ThrowIfNullOrEmpty(data);
         EmptyGuidException.ThrowIfEmpty(requestId);
 
         Id = id;
-        Data = data;
+        Date = DateTime.UtcNow;
         RequestId = requestId;
     }
     
-    public static RequestApprovedEvent Create(string data, Guid requestId)
+    public static RequestApprovedEvent Create(Guid requestId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(data);
-        EmptyGuidException.ThrowIfEmpty(requestId);
-
         var id = Guid.NewGuid();
-        return new RequestApprovedEvent(id, data, requestId);
+        return new RequestApprovedEvent(id, requestId);
     }
 }

@@ -4,27 +4,23 @@ namespace Resumes.Domain.Events;
 
 public class RequestCreatedEvent : IEvent
 {
-    public Guid Id { get; private init; }
-    public string Data { get; private init; }
-    public Guid RequestId { get; private init; }
+    public Guid Id { get; }
+    public DateTime Date { get; }
+    public Guid RequestId { get; }
 
-    private RequestCreatedEvent(Guid id, string data, Guid requestId)
+    private RequestCreatedEvent(Guid id, Guid requestId)
     {
         EmptyGuidException.ThrowIfEmpty(id);
-        ArgumentException.ThrowIfNullOrEmpty(data);
         EmptyGuidException.ThrowIfEmpty(requestId);
 
         Id = id;
-        Data = data;
+        Date = DateTime.UtcNow;
         RequestId = requestId;
     }
     
-    public static RequestCreatedEvent Create(string data, Guid requestId)
+    public static RequestCreatedEvent Create(Guid requestId)
     {
-        ArgumentException.ThrowIfNullOrEmpty(data);
-        EmptyGuidException.ThrowIfEmpty(requestId);
-
         var id = Guid.NewGuid();
-        return new RequestCreatedEvent(id, data, requestId);
+        return new RequestCreatedEvent(id, requestId);
     }
 }

@@ -8,16 +8,11 @@ public class EmailAddress
 
     public EmailAddress(string value)
     {
-        if (!IsEmailValid(value))
+        if (!value.Contains('@'))
         {
             throw new ValidationException("Email-адрес невалиден");
         }
 
         Value = value;
-    }
-    
-    private static bool IsEmailValid(string email)
-    {
-        return new EmailAddressAttribute().IsValid(email);
     }
 }

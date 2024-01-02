@@ -5,70 +5,68 @@ namespace Resumes.Domain.InterviewRequest;
 
 public class Request
 {
-    public Guid Id { get; private init; }
+    private readonly HashSet<IEvent> _events;
+    
+    public Guid Id { get; }
     public Guid UserId { get; private set; }
-    public Document Document { get; private set; }
-    public WorkflowRequest WorkflowRequest { get; private set; }
-    public HashSet<IEvent> Events { get; private init; }
+    public Document Document { get; private set; } = null!;
+    public Workflow Workflow { get; private set; } = null!;
+    public IReadOnlyCollection<IEvent> Events => _events;
 
-    private Request(
-        Guid id,
-        Guid userId,
-        Document document,
-        WorkflowRequest workflowRequest,
-        HashSet<IEvent> events)
+    private Request(Guid id, Guid userId, Document document, Workflow workflow)
     {
         EmptyGuidException.ThrowIfEmpty(id);
-        EmptyGuidException.ThrowIfEmpty(userId);
-        ArgumentNullException.ThrowIfNull(document);
-        ArgumentNullException.ThrowIfNull(workflowRequest);
-        ArgumentNullException.ThrowIfNull(events);
 
+        _events = new HashSet<IEvent>();
+        
         Id = id;
-        UserId = userId;
-        Document = document;
-        WorkflowRequest = workflowRequest;
-        Events = events;
+        SetUserId(userId);
+        SetDocument(document);
+        SetWorkflowRequest(workflow);
     }
 
-    public static Request Create(Guid userId, Document document, WorkflowRequest workflowRequest)
+    public static Request Create(Guid userId, Document document, Workflow workflow)
     {
-        EmptyGuidException.ThrowIfEmpty(userId);
-        ArgumentNullException.ThrowIfNull(document);
-        ArgumentNullException.ThrowIfNull(workflowRequest);
-
         var id = Guid.NewGuid();
-        var events = new HashSet<IEvent>();
-        return new Request(id, userId, document, workflowRequest, events);
+        return new Request(id, userId, document, workflow);
     }
 
-    public bool IsApproved()
-    {
-        return Events.Count != 0 &&
-               Events.Last() is RequestApprovedEvent;
-    }
-    
-    public bool IsRejected()
-    {
-        return Events.Count != 0 &&
-               Events.Last() is RequestRejectedEvent;
-    }
+    public bool IsApproved() => Events.Count != 0 && Events.Last() is RequestApprovedEvent;
+    public bool IsRejected() => Events.Count != 0 && Events.Last() is RequestRejectedEvent;
 
     public void Approve()
     {
-        var event_ = RequestApprovedEvent.Create("Approve", Id);
-        Events.Add(event_);
+        var event_ = RequestApprovedEvent.Create(Id);
+        _events.Add(event_);
     }
     
     public void Reject()
     {
-        var event_ = RequestRejectedEvent.Create("Reject", Id);
-        Events.Add(event_);
+        var event_ = RequestRejectedEvent.Create(Id);
+        _events.Add(event_);
     }
     
     public void Restart()
     {
-        var event_ = RequestCreatedEvent.Create("Restart", Id);
-        Events.Add(event_);
+        var event_ = RequestCreatedEvent.Create(Id);
+        _events.Add(event_);
+    }
+
+    private void SetUserId(Guid userId)
+    {
+        EmptyGuidException.ThrowIfEmpty(userId);
+        UserId = userId;
+    }
+    
+    private void SetDocument(Document document)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        Document = document;
+    }
+    
+    private void SetWorkflowRequest(Workflow workflow)
+    {
+        ArgumentNullException.ThrowIfNull(workflow);
+        Workflow = workflow;
     }
 }

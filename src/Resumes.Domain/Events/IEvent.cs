@@ -3,6 +3,6 @@
 public interface IEvent
 {
     Guid Id { get; }
-    string Data { get; }
+    DateTime Date { get; }
     Guid RequestId { get; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Resumes.Domain.Exceptions;
 
-public class EmptyGuidException : Exception
+public class EmptyGuidException : ArgumentException
 {
     public EmptyGuidException()
     {

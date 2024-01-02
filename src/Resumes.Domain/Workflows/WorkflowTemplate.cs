@@ -1,15 +1,16 @@
 ﻿using Resumes.Domain.Exceptions;
-using Resumes.Domain.InterviewRequest;
 
-namespace Resumes.Domain.Workflow;
+namespace Resumes.Domain.Workflows;
 
 public class WorkflowTemplate
 {
+    private HashSet<WorkflowStepTemplate> _steps;
+    
     public Guid Id { get; private init; }
     public string Name { get; private init; }
-    public ICollection<WorkflowStepTemplate> Steps { get; private init; }
+    public ICollection<WorkflowStepTemplate> Steps => _steps;
 
-    private WorkflowTemplate(Guid id, string name, ICollection<WorkflowStepTemplate> steps)
+    private WorkflowTemplate(Guid id, string name, HashSet<WorkflowStepTemplate> steps)
     {
         EmptyGuidException.ThrowIfEmpty(id);
         ArgumentException.ThrowIfNullOrEmpty(name);
@@ -17,7 +18,7 @@ public class WorkflowTemplate
         
         Id = id;
         Name = name;
-        Steps = steps;
+        _steps = steps;
     }
 
     public static WorkflowTemplate Create(string name)
@@ -27,14 +28,5 @@ public class WorkflowTemplate
         var id = Guid.NewGuid();
         var steps = new HashSet<WorkflowStepTemplate>();
         return new WorkflowTemplate(id, name, steps);
-    }
-    
-    public static Request CreateRequest(Guid userId, Document document, WorkflowRequest workflowRequest)
-    {
-        EmptyGuidException.ThrowIfEmpty(userId);
-        ArgumentNullException.ThrowIfNull(document);
-        ArgumentNullException.ThrowIfNull(workflowRequest);
-
-        return Request.Create(userId, document, workflowRequest);
     }
 }

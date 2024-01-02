@@ -1,33 +1,29 @@
 ﻿using Resumes.Domain.Exceptions;
 
-namespace Resumes.Domain.UserInfo;
+namespace Resumes.Domain.Entities;
 
 public class Role
 {
     public Guid Id { get; private init; }
-    public string Name { get; private set; }
+    public string Name { get; private set; } = null!;
 
     private Role(Guid id, string name)
     {
         EmptyGuidException.ThrowIfEmpty(id);
-        ArgumentException.ThrowIfNullOrEmpty(name);
         
         Id = id;
-        Name = name;
+        SetName(name);
     }
 
     public static Role Create(string name)
     {
-        ArgumentException.ThrowIfNullOrEmpty(name);
-        
         var id = Guid.NewGuid();
         return new Role(id, name);
     }
 
-    public void UpdateName(string newName)
+    public void SetName(string name)
     {
-        ArgumentException.ThrowIfNullOrEmpty(newName);
-
-        Name = newName;
+        ArgumentException.ThrowIfNullOrEmpty(name);
+        Name = name;
     }
 }

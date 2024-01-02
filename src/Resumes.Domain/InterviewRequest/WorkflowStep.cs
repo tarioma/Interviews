@@ -1,31 +1,63 @@
-﻿using Resumes.Domain.Exceptions;
-
-namespace Resumes.Domain.InterviewRequest;
+﻿namespace Resumes.Domain.InterviewRequest;
 
 public class WorkflowStep
 {
-    public string Name { get; private init; }
-    public int Order { get; private init; }
-    public Guid UserId { get; private init; }
-    public Guid RoleId { get; private init; }
-    public string Comment { get; private init; }
+    public Guid Id { get; }
+    public string Name { get; private set; }
+    public int Order { get; private set; }
+    public Status Status { get; set; }
+    public Guid? UserId { get; private set; }
+    public Guid? RoleId { get; private set; }
+    public string? Comment { get; set; }
 
-    public WorkflowStep(string name, int order, Guid userId, Guid roleId, string comment)
+    private WorkflowStep(
+        Guid id,
+        string name,
+        int order,
+        Status status,
+        string? comment,
+        Guid? userId = null,
+        Guid? roleId = null)
     {
-        ArgumentException.ThrowIfNullOrEmpty(name);
-        EmptyGuidException.ThrowIfEmpty(userId);
-        EmptyGuidException.ThrowIfEmpty(roleId);
-        ArgumentException.ThrowIfNullOrEmpty(comment);
-
-        if (order < 0)
+        if (userId is null && roleId is null)
         {
-            throw new ArgumentException("order не может быть отрицательным");
+            throw new ArgumentException($"{nameof(userId)} и {nameof(roleId)} не могут быть оба отрицательным");
         }
 
-        Name = name;
-        Order = order;
+        Id = id;
+        SetName(name);
+        SetOrder(order);
+        Status = status;
         UserId = userId;
         RoleId = roleId;
         Comment = comment;
+    }
+
+    public static WorkflowStep CreateWithUserId(string name, int order, Status status, Guid userId, string? comment)
+    {
+        var id = Guid.NewGuid();
+        return new WorkflowStep(id, name, order, status, comment, userId: userId);
+    }
+    
+    public static WorkflowStep CreateWithRoleId(string name, int order, Status status, Guid roleId, string? comment)
+    {
+        var id = Guid.NewGuid();
+        return new WorkflowStep(id, name, order, status, comment, roleId: roleId);
+    }
+
+    public void SetName(string name)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(name);
+        Name = name;
+    }
+
+    public void SetOrder(int order)
+    {
+        if (order < 0)
+        {
+            throw new ArgumentException($"{nameof(order)} не может быть отрицательным");
+        }
+
+        Order = order;
     }
 }

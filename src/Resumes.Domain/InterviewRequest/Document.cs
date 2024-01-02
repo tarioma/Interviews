@@ -5,58 +5,63 @@ namespace Resumes.Domain.InterviewRequest;
 
 public class Document
 {
-    // Максимальный возраст для валидации дня рождения
     private const int MaxAgeForValidation = 100;
     
-    public string Name { get; private set; }
-    public EmailAddress EmailAddress { get; private set; }
+    public string Name { get; private set; } = null!;
+    public EmailAddress EmailAddress { get; private set; } = null!;
     public DateOnly Birthday { get; private set; }
+    public int Experience { get; private set; }
 
-    public Document(string name, EmailAddress emailAddress, DateOnly birthday)
+    private Document(string name, EmailAddress emailAddress, DateOnly birthday, int experience)
+    {
+        SetName(name);
+        SetEmailAddress(emailAddress);
+        SetBirthday(birthday);
+        SetExperience(experience);
+    }
+
+    public static Document Create(string name, EmailAddress emailAddress, DateOnly birthday, int experience)
+    {
+        return new Document(name, emailAddress, birthday, experience);
+    }
+
+    public void SetName(string name)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
+        Name = name;
+    }
+    
+    public void SetEmailAddress(EmailAddress emailAddress)
+    {
         ArgumentNullException.ThrowIfNull(emailAddress);
-
+        EmailAddress = emailAddress;
+    }
+    
+    public void SetBirthday(DateOnly birthday)
+    {
         if (!IsBirthdayValid(birthday))
         {
             throw new ValidationException("День рождения невалиден");
         }
 
-        Name = name;
-        EmailAddress = emailAddress;
         Birthday = birthday;
-    }
-
-    public void UpdateName(string newName)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(newName);
-
-        Name = newName;
-    }
-    
-    public void UpdateEmailAddress(EmailAddress newEmailAddress)
-    {
-        ArgumentNullException.ThrowIfNull(newEmailAddress);
-
-        EmailAddress = newEmailAddress;
-    }
-    
-    public void UpdateBirthday(DateOnly newBirthday)
-    {
-        if (!IsBirthdayValid(newBirthday))
-        {
-            throw new ValidationException("День рождения невалиден");
-        }
-
-        Birthday = newBirthday;
     }
 
     private static bool IsBirthdayValid(DateOnly birthday)
     {
-        var currentYear = DateTime.Today.Year;
-        var minYear = currentYear - MaxAgeForValidation;
+        var currentUTCYear = DateTime.UtcNow.Year;
+        var minYear = currentUTCYear - MaxAgeForValidation;
         
-        return birthday.Year > minYear &&
-               birthday.Year < currentYear;
+        return birthday.Year > minYear && birthday.Year < currentUTCYear;
+    }
+
+    public void SetExperience(int experience)
+    {
+        if (experience < 0)
+        {
+            throw new ArgumentException($"nameof({experience}) не может быть отрицательным");
+        }
+        
+        Experience = experience;
     }
 }
