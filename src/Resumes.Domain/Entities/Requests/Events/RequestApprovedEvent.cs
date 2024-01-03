@@ -1,14 +1,14 @@
-﻿using Resumes.Domain.Exceptions;
+﻿using Resumes.Domain.Entities.Exceptions;
 
-namespace Resumes.Domain.Events;
+namespace Resumes.Domain.Entities.Requests.Events;
 
-public class RequestRejectedEvent : IEvent
+public class RequestApprovedEvent : IEvent
 {
     public Guid Id { get; }
     public DateTime Date { get; }
     public Guid RequestId { get; }
 
-    private RequestRejectedEvent(Guid id, Guid requestId)
+    private RequestApprovedEvent(Guid id, Guid requestId)
     {
         EmptyGuidException.ThrowIfEmpty(id);
         EmptyGuidException.ThrowIfEmpty(requestId);
@@ -18,9 +18,9 @@ public class RequestRejectedEvent : IEvent
         RequestId = requestId;
     }
     
-    public static RequestRejectedEvent Create(Guid requestId)
+    public static RequestApprovedEvent Create(Guid requestId)
     {
         var id = Guid.NewGuid();
-        return new RequestRejectedEvent(id, requestId);
+        return new RequestApprovedEvent(id, requestId);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Resumes.Domain.Events;
+﻿namespace Resumes.Domain.Entities.Requests.Events;
 
 public interface IEvent
 {

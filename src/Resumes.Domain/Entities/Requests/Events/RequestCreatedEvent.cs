@@ -1,6 +1,6 @@
-﻿using Resumes.Domain.Exceptions;
+﻿using Resumes.Domain.Entities.Exceptions;
 
-namespace Resumes.Domain.Events;
+namespace Resumes.Domain.Entities.Requests.Events;
 
 public class RequestCreatedEvent : IEvent
 {

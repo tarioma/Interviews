@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Resumes.Domain.Entities;
 
-namespace Resumes.Domain.InterviewRequest;
+namespace Resumes.Domain.Entities.Requests;
 
 public class Document
 {

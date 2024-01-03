@@ -1,4 +1,4 @@
-﻿using Resumes.Domain.Exceptions;
+﻿using Resumes.Domain.Entities.Exceptions;
 
 namespace Resumes.Domain.Entities;
 

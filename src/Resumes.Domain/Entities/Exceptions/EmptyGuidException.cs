@@ -1,13 +1,8 @@
-﻿namespace Resumes.Domain.Exceptions;
+﻿namespace Resumes.Domain.Entities.Exceptions;
 
 public class EmptyGuidException : ArgumentException
 {
     public EmptyGuidException()
-    {
-    }
-    
-    public EmptyGuidException(string? message)
-        : base(message)
     {
     }
 

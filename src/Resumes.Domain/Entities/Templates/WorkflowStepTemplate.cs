@@ -1,6 +1,6 @@
-﻿using Resumes.Domain.Exceptions;
+﻿using Resumes.Domain.Entities.Exceptions;
 
-namespace Resumes.Domain.Workflows;
+namespace Resumes.Domain.Entities.Templates;
 
 public class WorkflowStepTemplate
 {
@@ -14,12 +14,12 @@ public class WorkflowStepTemplate
         ArgumentException.ThrowIfNullOrEmpty(name);
         EmptyGuidException.ThrowIfEmpty(userId);
         EmptyGuidException.ThrowIfEmpty(roleId);
-        
+
         if (order < 0)
         {
             throw new ArgumentOutOfRangeException($"{nameof(order)} не может быть отрицательным");
         }
-        
+
         Name = name;
         Order = order;
         UserId = userId;
