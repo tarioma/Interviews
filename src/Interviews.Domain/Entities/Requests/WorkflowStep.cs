@@ -1,6 +1,6 @@
 ﻿namespace Interviews.Domain.Entities.Requests;
 
-public record WorkflowStep
+public class WorkflowStep
 {
     private const int MaxNameLength = 100;
     private const int MaxCommentLength = 500;
@@ -8,10 +8,11 @@ public record WorkflowStep
     public string Name { get; private init; }
     public int Order { get; private init; }
     public string Comment { get; private init; }
+    public Status Status { get; set; }
     public Guid? UserId { get; private init; }
     public Guid? RoleId { get; private init; }
     
-    public WorkflowStep(string name, int order, string comment, Guid? userId = null, Guid? roleId = null)
+    public WorkflowStep(string name, int order, string comment, Status status, Guid? userId = null, Guid? roleId = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentException.ThrowIfNullOrWhiteSpace(comment);
@@ -49,12 +50,8 @@ public record WorkflowStep
         Name = name.Trim();
         Order = order;
         Comment = comment.Trim();
+        Status = status;
         UserId = userId;
         RoleId = roleId;
-    }
-
-    public void SetStatus()
-    {
-        // TODO
     }
 }

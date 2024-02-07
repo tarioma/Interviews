@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Interviews.Domain.Entities.Users;
+﻿namespace Interviews.Domain.Entities.Users;
 
 public record EmailAddress
 {
@@ -20,9 +18,10 @@ public record EmailAddress
             throw new ArgumentException("Адрес навалиден.", nameof(value));
         }
         
-        Value = value.Trim();
+        Value = value.Trim().ToLower();
     }
 
-    private static bool IsEmail(string value) => new EmailAddressAttribute().IsValid(value);
+    private static bool IsEmail(string value) => value.Contains('@') &&
+                                                 !value.TrimStart().StartsWith('@') &&
+                                                 !value.TrimEnd().EndsWith('@');
 }
-

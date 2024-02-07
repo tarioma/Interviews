@@ -1,4 +1,6 @@
-﻿namespace Interviews.Domain.Entities.WorkflowTemplates;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Interviews.Domain.Entities.WorkflowTemplates;
 
 public class WorkflowTemplate
 {
@@ -7,10 +9,10 @@ public class WorkflowTemplate
     private List<StepTemplate> _steps;
     
     public Guid Id { get; private init; }
-    public string Name { get; private set; } = null!;
+    public string Name { get; private set; }
     public IReadOnlyCollection<StepTemplate> Steps => _steps;
 
-    private WorkflowTemplate(Guid id, string name, List<StepTemplate> steps)
+    private WorkflowTemplate(Guid id, string name, IEnumerable<StepTemplate> steps)
     {
         ArgumentNullException.ThrowIfNull(steps);
         
@@ -18,12 +20,13 @@ public class WorkflowTemplate
         {
             throw new ArgumentException("Не может быть пустым.", nameof(id));
         }
-        
-        SetName(name);
-        _steps = steps;
-    }
 
-    public WorkflowTemplate Create(string name)
+        Id = id;
+        SetName(name);
+        SetSteps(steps);
+    }
+    
+    public static WorkflowTemplate Create(string name)
     {
         var id = Guid.NewGuid();
         var steps = new List<StepTemplate>();
@@ -31,6 +34,7 @@ public class WorkflowTemplate
         return new WorkflowTemplate(id, name, steps);
     }
 
+    [MemberNotNull(nameof(Name))]
     public void SetName(string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
@@ -41,6 +45,23 @@ public class WorkflowTemplate
         }
         
         Name = name.Trim();
+    }
+    
+    [MemberNotNull(nameof(_steps))]
+    private void SetSteps(IEnumerable<StepTemplate> steps)
+    {
+        ArgumentNullException.ThrowIfNull(steps);
+
+        var stepsList = steps.ToList();
+        var uniqueOrdersCount = stepsList.GroupBy(s => s.Order).Count();
+
+        if (uniqueOrdersCount < stepsList.Count)
+        {
+            throw new ArgumentException("Номера шагов должны быть уникальными.", nameof(steps));
+        }
+            
+        var orderedSteps = stepsList.OrderBy(s => s.Order);
+        _steps = orderedSteps.ToList();
     }
 
     // TODO
