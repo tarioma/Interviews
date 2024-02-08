@@ -1,3 +1,80 @@
-Диаграмма -> [Тык](https://mermaid.live/edit#pako:eNqlVcFunDAQ_RXkUyKxqxDMLsuhVZXNIYe20m6rSik9WHjSbguYGpM2RXvpZ_XQb0j_KMbGi1kgTVUumJk345k3z6ZGCaOAIpSkpCzXO_KRkyzOHfm8LYE7s9kzZ8NS0KYNfK2gFMq6ZkmVQS6GnneMf7lJ2beh5-ry9hCh13oDDbngQAQ8CnlRFJzdAn0UtIHPkAgLYgrqVbcVUPTdbyArUlnBAGYcca4DFFeKn1obVB20W78iGXRflxnZpd1nQ6cB7-2EjeOvCfsRumEraOaovsuWlvcfxvM1tV9R2ahz_-vPz_vfnceM1elM_XmqVKUZxMmpbdXM27YWd9JsaJlb4MBaCsIP8b1WdT8T9KyJINP0WLqq7c2Uc3wSI2r7t1BLg08MNMTXo8LpQc1A6uGMjFSn1dgIuuzJ24hkdI8GUE_les0p8GNVPT-WumW4YFl3Zyi9bkFsBRFVOTr147aedN6GHZpw-zhoVSgJugfyT82IDrVMcTJS0X9ws0cuyoDLeVN5F6ucMRKfQCZEkVxSuCFVKmIU5w2UVIJt7_IERYJX4KKqoLKU9vY2xoLkKKrRdxR53mKOF6vQCz0vOPexH7roDkV4OV_i0F_ilR-uFjjEeO-iH4zJDGfzcOEFSw_75_gs8INApbtWPp0d6E4w_rL9eTSv_QOGa-Tx)
+```mermaid
+classDiagram
+    User --> Role
+    Request --> Document
+    Request --> Workflow
+    Request --> IEvent
+    IEvent --> RequestCreateEvent
+    IEvent --> RequestApprovedEvent
+    IEvent --> RequestRejectEvent
+    Workflow --> WorkflowStep
+    WorkflowTemplate --> WorkflowStepTemplate
 
-![изображение](https://github.com/tarioma/Interviews/assets/125894838/4f6544bd-4655-4126-9d3e-05032f976e8a)
+    class User{
+        Id
+        Name
+        Email
+        RoleId
+    }
+    class Role{
+        Id
+        Name
+    }
+    class Request{
+        - Events IEvent[]
+        Id
+        UserId -- кто
+        Document 
+        Workflow
+        IsApproved()
+        IsReject()
+        Approve(User)
+        Reject(User)
+        Restart()
+    }
+    class IEvent{
+        Id
+        Data
+    }
+    class RequestCreateEvent{
+        RequestId
+    }
+    class RequestApprovedEvent{
+        RequestId
+    }
+    class RequestRejectEvent{
+        RequestId
+    }
+    class Document{
+        Email
+    }
+    class Workflow{
+        WorkflowTemplateId
+        Name
+        Steps WorkflowStep[]
+        -Approve()
+        -Reject()
+    }
+    class WorkflowStep{
+        Name
+        Order
+        Comment
+        Status
+        UserId?
+        RoleId?
+        -SetStatus(Status)
+    }
+    class WorkflowTemplate{
+        Id
+        Name
+        Steps WorkflowStepTemplate[]
+        Create(User, Document) Request
+    }
+
+    class WorkflowStepTemplate{
+        Name
+        Order
+        UserId?
+        RoleId?
+    }
+```
