@@ -7,8 +7,8 @@ public class WorkflowStep
     
     public string Name { get; private init; }
     public int Order { get; private init; }
-    public string Comment { get; private init; }
     public Status Status { get; set; }
+    public string Comment { get; private init; }
     public Guid? UserId { get; private init; }
     public Guid? RoleId { get; private init; }
     
@@ -49,8 +49,8 @@ public class WorkflowStep
 
         Name = name.Trim();
         Order = order;
-        Comment = comment.Trim();
         Status = status;
+        Comment = comment.Trim();
         UserId = userId;
         RoleId = roleId;
     }

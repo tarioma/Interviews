@@ -12,7 +12,7 @@ public class Request
     public Guid UserId { get; private set; }
     public IReadOnlyCollection<IRequestEvent> Events => _events;
 
-    private Request(Guid id, Document document, Workflow workflow, Guid userId, List<IRequestEvent> events)
+    private Request(Guid id, Document document, Workflow workflow, Guid userId)
     {
         if (id == Guid.Empty)
         {
@@ -23,15 +23,16 @@ public class Request
         SetDocument(document);
         SetWorkflow(workflow);
         SetUserId(userId);
-        _events = events;
+        _events = new List<IRequestEvent>();
     }
 
     public static Request Create(Document document, Workflow workflow, Guid userId)
     {
         var id = Guid.NewGuid();
-        var events = new List<IRequestEvent>();
-
-        return new Request(id, document, workflow, userId, events);
+        var request = new Request(id, document, workflow, userId);
+        
+        request._events.Add(RequestCreatedEvent.Create(request.Id));
+        return request;
     }
 
     public void SetDocument(Document document)
@@ -58,9 +59,10 @@ public class Request
         UserId = userId;
     }
 
-    public bool IsApproved() => Events.Last() is RequestApprovedEvent;
+    // TODO
+    // public bool IsApproved() => Events.Last() is RequestApprovedEvent;
     
-    public bool IsRejected() => Events.Last() is RequestRejectedEvent;
+    // public bool IsRejected() => Events.Last() is RequestRejectedEvent;
     
     public void Approve()
     {
