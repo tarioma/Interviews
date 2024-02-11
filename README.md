@@ -1,68 +1,81 @@
 ```mermaid
 classDiagram
     User --> Role
+    User --> EmailAddress
     Request --> Document
     Request --> Workflow
-    Request --> IEvent
-    IEvent --> RequestCreateEvent
-    IEvent --> RequestApprovedEvent
-    IEvent --> RequestRejectEvent
+    Request --> IRequestEvent
+    Document --> EmailAddress
+    IRequestEvent --> RequestCreateEvent
+    IRequestEvent --> RequestApprovedEvent
+    IRequestEvent --> RequestRejectEvent
     Workflow --> WorkflowStep
     WorkflowTemplate --> WorkflowStepTemplate
 
     class User{
         Id
         Name
-        Email
+        EmailAddress
         RoleId
     }
     class Role{
         Id
         Name
     }
+    class EmailAddress{
+        Value
+    }
     class Request{
-        - Events IEvent[]
         Id
         UserId -- кто
         Document 
         Workflow
+        Events IRequestEvent[]
+        
         IsApproved()
         IsReject()
         Approve(User)
         Reject(User)
         Restart()
     }
-    class IEvent{
+    class IRequestEvent{
         Id
-        Data
+        UtcDateTime
+        RequestId
     }
     class RequestCreateEvent{
-        RequestId
+        
     }
     class RequestApprovedEvent{
-        RequestId
+        
     }
     class RequestRejectEvent{
-        RequestId
+        
     }
     class Document{
-        Email
+        Name
+        DateOfBirth
+        EmailAddress
     }
     class Workflow{
         WorkflowTemplateId
         Name
         Steps WorkflowStep[]
-        -Approve()
-        -Reject()
+        
+        IsApproved()
+        IsRejected()
+        Approve()
+        Reject()
     }
     class WorkflowStep{
         Name
         Order
         Comment
-        Status
+        Status?
         UserId?
         RoleId?
-        -SetStatus(Status)
+        
+        SetStatus(Status)
     }
     class WorkflowTemplate{
         Id
