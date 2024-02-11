@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Interviews.Domain.Entities.Users;
+namespace Interviews.Domain.Entities.Employees;
 
 public class Employee
 {

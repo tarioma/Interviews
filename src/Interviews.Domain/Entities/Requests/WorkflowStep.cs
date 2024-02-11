@@ -1,4 +1,4 @@
-﻿using Interviews.Domain.Entities.Users;
+﻿using Interviews.Domain.Entities.Employees;
 
 namespace Interviews.Domain.Entities.Requests;
 

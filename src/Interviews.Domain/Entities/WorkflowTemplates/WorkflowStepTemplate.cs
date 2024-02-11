@@ -6,10 +6,10 @@ public record WorkflowStepTemplate
 
     public string Name { get; private init; }
     public int Order { get; private init; }
-    public Guid? UserId { get; private init; }
+    public Guid? EmployeeId { get; private init; }
     public Guid? RoleId { get; private init; }
 
-    public WorkflowStepTemplate(string name, int order, Guid? userId = null, Guid? roleId = null)
+    public WorkflowStepTemplate(string name, int order, Guid? employeeId = null, Guid? roleId = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
@@ -23,20 +23,20 @@ public record WorkflowStepTemplate
             throw new ArgumentException("Не может быть отрицательным.", nameof(order));
         }
 
-        if ((userId is null || userId == Guid.Empty) &&
+        if ((employeeId is null || employeeId == Guid.Empty) &&
             (roleId is null || roleId == Guid.Empty))
         {
             throw new ArgumentException(
-                $"{nameof(userId)} и {nameof(roleId)} не могут одновременно быть пустыми или null.");
+                $"{nameof(employeeId)} и {nameof(roleId)} не могут одновременно быть пустыми или null.");
         }
 
-        if (userId is null || userId == Guid.Empty)
+        if (employeeId is null || employeeId == Guid.Empty)
         {
             RoleId = roleId;
         }
         else
         {
-            UserId = userId;
+            EmployeeId = employeeId;
         }
 
         Name = name.Trim();

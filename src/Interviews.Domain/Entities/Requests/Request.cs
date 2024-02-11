@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.Requests.Events;
-using Interviews.Domain.Entities.Users;
 
 namespace Interviews.Domain.Entities.Requests;
 
