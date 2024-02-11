@@ -1,7 +1,7 @@
 ```mermaid
 classDiagram
-    User --> Role
-    User --> EmailAddress
+    Employee --> Role
+    Employee --> EmailAddress
     Request --> Document
     Request --> Workflow
     Request --> IRequestEvent
@@ -9,10 +9,11 @@ classDiagram
     IRequestEvent --> RequestCreateEvent
     IRequestEvent --> RequestApprovedEvent
     IRequestEvent --> RequestRejectEvent
+    IRequestEvent --> RequestRestartedEvent
     Workflow --> WorkflowStep
     WorkflowTemplate --> WorkflowStepTemplate
 
-    class User{
+    class Employee{
         Id
         Name
         EmailAddress
@@ -27,16 +28,16 @@ classDiagram
     }
     class Request{
         Id
-        UserId -- кто
         Document 
         Workflow
+        EmployeeId
         Events IRequestEvent[]
         
         IsApproved()
         IsReject()
-        Approve(User)
-        Reject(User)
-        Restart()
+        Approve(Employee, comment?)
+        Reject(Employee, comment?)
+        Restart(Employee)
     }
     class IRequestEvent{
         Id
@@ -44,13 +45,12 @@ classDiagram
         RequestId
     }
     class RequestCreateEvent{
-        
     }
     class RequestApprovedEvent{
-        
     }
     class RequestRejectEvent{
-        
+    }
+    class RequestRestartedEvent{
     }
     class Document{
         Name
@@ -64,30 +64,35 @@ classDiagram
         
         IsApproved()
         IsRejected()
-        Approve()
-        Reject()
+        Approve(Employee, comment?)
+        Reject(Employee, comment?)
+        Restart(Employee)
     }
     class WorkflowStep{
         Name
         Order
         Comment
         Status?
-        UserId?
+        EmployeeId?
         RoleId?
         
-        SetStatus(Status)
+        CreateByEmployeeId()
+        CreateByRoleId()
+        Approve(Employee, comment?)
+        Reject(Employee, comment?)
+        ToPending(Employee)
     }
     class WorkflowTemplate{
         Id
         Name
         Steps WorkflowStepTemplate[]
-        Create(User, Document) Request
+        Create(Employee, Document) Request
     }
 
     class WorkflowStepTemplate{
         Name
         Order
-        UserId?
+        EmployeeId?
         RoleId?
     }
 ```
