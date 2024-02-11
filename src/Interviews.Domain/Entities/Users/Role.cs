@@ -1,11 +1,13 @@
-﻿namespace Interviews.Domain.Entities.Users;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Interviews.Domain.Entities.Users;
 
 public class Role
 {
     private const int MaxNameLength = 100;
     
     public Guid Id { get; private init; }
-    public string Name { get; private set; } = null!;
+    public string Name { get; private set; }
 
     private Role(Guid id, string name)
     {
@@ -18,14 +20,15 @@ public class Role
         SetName(name);
     }
 
-    public Role Create(string name)
+    public static Role Create(string name)
     {
         var id = Guid.NewGuid();
 
         return new Role(id, name);
     }
 
-    public void SetName(string name)
+    [MemberNotNull(nameof(Name))]
+    private void SetName(string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 

@@ -1,18 +1,20 @@
-﻿using Interviews.Domain.Entities.Requests.Events;
+﻿using System.Diagnostics.CodeAnalysis;
+using Interviews.Domain.Entities.Requests.Events;
+using Interviews.Domain.Entities.Users;
 
 namespace Interviews.Domain.Entities.Requests;
 
 public class Request
 {
     private readonly List<IRequestEvent> _events;
-    
+
     public Guid Id { get; private init; }
-    public Document Document { get; private set; } = null!;
-    public Workflow Workflow { get; private set; } = null!;
-    public Guid UserId { get; private set; }
+    public Document Document { get; private set; }
+    public Workflow Workflow { get; private set; }
+    public Guid EmployeeId { get; private set; }
     public IReadOnlyCollection<IRequestEvent> Events => _events;
 
-    private Request(Guid id, Document document, Workflow workflow, Guid userId)
+    private Request(Guid id, Document document, Workflow workflow, Guid employeeId)
     {
         if (id == Guid.Empty)
         {
@@ -22,59 +24,66 @@ public class Request
         Id = id;
         SetDocument(document);
         SetWorkflow(workflow);
-        SetUserId(userId);
+        SetEmployeeId(employeeId);
         _events = new List<IRequestEvent>();
     }
 
-    public static Request Create(Document document, Workflow workflow, Guid userId)
+    public static Request Create(Document document, Workflow workflow, Guid employeeId)
     {
         var id = Guid.NewGuid();
-        var request = new Request(id, document, workflow, userId);
-        
-        request._events.Add(RequestCreatedEvent.Create(request.Id));
+        var request = new Request(id, document, workflow, employeeId);
+
+        var requestCreatedEvent = RequestCreatedEvent.Create(request.Id);
+        request._events.Add(requestCreatedEvent);
+
         return request;
     }
 
-    public void SetDocument(Document document)
+    [MemberNotNull(nameof(Document))]
+    private void SetDocument(Document document)
     {
         ArgumentNullException.ThrowIfNull(document);
 
         Document = document;
     }
-    
-    public void SetWorkflow(Workflow workflow)
+
+    [MemberNotNull(nameof(Workflow))]
+    private void SetWorkflow(Workflow workflow)
     {
         ArgumentNullException.ThrowIfNull(workflow);
 
         Workflow = workflow;
     }
-    
-    public void SetUserId(Guid userId)
+
+    private void SetEmployeeId(Guid employeeId)
     {
-        if (userId == Guid.Empty)
+        if (employeeId == Guid.Empty)
         {
-            throw new ArgumentException("Не может быть пустым.", nameof(userId));
+            throw new ArgumentException("Не может быть пустым.", nameof(employeeId));
         }
 
-        UserId = userId;
+        EmployeeId = employeeId;
     }
 
-    // TODO
-    // public bool IsApproved() => Events.Last() is RequestApprovedEvent;
-    
-    // public bool IsRejected() => Events.Last() is RequestRejectedEvent;
-    
-    public void Approve()
+    public bool IsApproved() => Workflow.IsApproved();
+
+    public bool IsRejected() => Workflow.IsRejected();
+
+    public void Approve(Employee employee, string? comment = null)
     {
-        var approvedEvent = RequestApprovedEvent.Create(Id);
-        _events.Add(approvedEvent);
-    }
-    
-    public void Reject()
-    {
-        var rejectedEvent = RequestRejectedEvent.Create(Id);
-        _events.Add(rejectedEvent);
+        _events.Add(RequestApprovedEvent.Create(Id));
+        Workflow.Approve(employee, comment);
     }
 
-    public void Restart() => _events.Clear();
+    public void Reject(Employee employee, string? comment = null)
+    {
+        _events.Add(RequestRejectedEvent.Create(Id));
+        Workflow.Reject(employee, comment);
+    }
+    
+    public void Restart(Employee employee)
+    {
+        _events.Add(RequestRestartedEvent.Create(Id));
+        Workflow.Restart(employee);
+    }
 }

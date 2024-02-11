@@ -1,4 +1,6 @@
-﻿namespace Interviews.Domain.Entities.Requests;
+﻿using Interviews.Domain.Entities.Users;
+
+namespace Interviews.Domain.Entities.Requests;
 
 public record Workflow
 {
@@ -35,5 +37,58 @@ public record Workflow
         var steps = new List<WorkflowStep>();
 
         return new Workflow(workflowTemplateId, name, steps);
+    }
+
+    internal bool IsApproved() => Steps.All(s => s.Status == Status.Approved);
+    
+    internal bool IsRejected() => Steps.Any(s => s.Status == Status.Rejected);
+    
+    internal void Approve(Employee employee, string? comment = null)
+    {
+        CheckTerminalState();
+
+        var lastStep = GetLastStep();
+        lastStep.Approve(employee, comment);
+    }
+
+    internal void Reject(Employee employee, string? comment = null)
+    {
+        CheckTerminalState();
+        
+        var lastStep = GetLastStep();
+        lastStep.Reject(employee, comment);
+    }
+    
+    private void CheckTerminalState()
+    {
+        if (IsApproved())
+        {
+            throw new Exception("Уже одобрено.");
+        }
+        
+        if (IsRejected())
+        {
+            throw new Exception("Уже отклонено.");
+        }
+    }
+    
+    private WorkflowStep GetLastStep()
+    {
+        var lastStep = Steps.Where(s => s.Status == Status.Pending).MinBy(s => s.Order);
+
+        if (lastStep is null)
+        {
+            throw new Exception("Нет шага со статусом ожидания.");
+        }
+        
+        return lastStep;
+    }
+    
+    internal void Restart(Employee employee)
+    {
+        foreach (var step in _steps)
+        {
+            step.ToPending(employee);
+        }
     }
 }

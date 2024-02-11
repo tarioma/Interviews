@@ -2,7 +2,8 @@
 
 public enum Status
 {
-    None,
+    Undefined,
+    Pending,
     Approved,
     Rejected
 }

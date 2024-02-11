@@ -1,4 +1,4 @@
-﻿namespace Interviews.Domain.Entities.Users;
+﻿namespace Interviews.Domain.Entities;
 
 public record EmailAddress
 {
@@ -8,20 +8,22 @@ public record EmailAddress
 
     public EmailAddress(string value)
     {
+        value = value.Trim();
+
         if (value.Length > MaxValueLength)
         {
             throw new ArgumentException($"Максимальная длина {MaxValueLength} символов.", nameof(value));
         }
-
+        
         if (!IsEmail(value))
         {
             throw new ArgumentException("Адрес навалиден.", nameof(value));
         }
-        
-        Value = value.Trim().ToLower();
+
+        Value = value.ToUpperInvariant();
     }
 
     private static bool IsEmail(string value) => value.Contains('@') &&
-                                                 !value.TrimStart().StartsWith('@') &&
-                                                 !value.TrimEnd().EndsWith('@');
+                                                 !value.StartsWith('@') &&
+                                                 !value.EndsWith('@');
 }

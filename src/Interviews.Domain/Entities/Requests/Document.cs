@@ -1,20 +1,41 @@
 ﻿namespace Interviews.Domain.Entities.Requests;
 
-public class Document
+public record Document
 {
-    private const int MaxEmailLength = 500;
+    private const int MaxNameLength = 100;
+    private const int MinAcceptableAge = 18;
     
-    public string Email { get; private init; }
+    public string Name { get; private init; }
+    public DateOnly DateOfBirth { get; private init; }
+    public EmailAddress EmailAddress { get; private init; }
 
-    public Document(string email)
+    public Document(string name, DateOnly dateOfBirth, EmailAddress emailAddress)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(email);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        ArgumentNullException.ThrowIfNull(emailAddress);
         
-        if (email.Length > MaxEmailLength)
+        if (name.Length > MaxNameLength)
         {
-            throw new ArgumentException($"Максимальная длина {MaxEmailLength} символов.", nameof(email));
+            throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));
         }
 
-        Email = email;
+        if (IsDateOfBirthAcceptable(dateOfBirth))
+        {
+            throw new ArgumentException($"Минимальный допустимый возраст {MinAcceptableAge} лет.", nameof(name));
+        }
+
+        Name = name.Trim();
+        DateOfBirth = dateOfBirth;
+        EmailAddress = emailAddress;
+    }
+
+    private static bool IsDateOfBirthAcceptable(DateOnly dateOfBirth)
+    {
+        var acceptableDateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-MinAcceptableAge));
+        
+        // Погрешность в 1 день из-за возможной разницы с UTC
+        acceptableDateOfBirth = acceptableDateOfBirth.AddDays(1);
+
+        return acceptableDateOfBirth < dateOfBirth;
     }
 }

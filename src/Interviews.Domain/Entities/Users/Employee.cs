@@ -1,15 +1,17 @@
-﻿namespace Interviews.Domain.Entities.Users;
+﻿using System.Diagnostics.CodeAnalysis;
 
-public class User
+namespace Interviews.Domain.Entities.Users;
+
+public class Employee
 {
     private const int MaxNameLength = 100;
     
     public Guid Id { get; private init; }
-    public string Name { get; private set; } = null!;
-    public EmailAddress EmailAddress { get; private set; } = null!;
+    public string Name { get; private set; }
+    public EmailAddress EmailAddress { get; private set; }
     public Guid RoleId { get; private set; }
 
-    private User(Guid id, string name, EmailAddress emailAddress, Guid roleId)
+    private Employee(Guid id, string name, EmailAddress emailAddress, Guid roleId)
     {
         if (id == Guid.Empty)
         {
@@ -22,14 +24,15 @@ public class User
         SetRoleId(roleId);
     }
     
-    public User Create(string name, EmailAddress emailAddress, Guid roleId)
+    public static Employee Create(string name, EmailAddress emailAddress, Guid roleId)
     {
         var id = Guid.NewGuid();
         
-        return new User(id, name, emailAddress, roleId);
+        return new Employee(id, name, emailAddress, roleId);
     }
 
-    public void SetName(string name)
+    [MemberNotNull(nameof(Name))]
+    private void SetName(string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
@@ -41,14 +44,15 @@ public class User
         Name = name.Trim();
     }
     
-    public void SetEmailAddress(EmailAddress emailAddress)
+    [MemberNotNull(nameof(EmailAddress))]
+    private void SetEmailAddress(EmailAddress emailAddress)
     {
         ArgumentNullException.ThrowIfNull(emailAddress);
         
         EmailAddress = emailAddress;
     }
     
-    public void SetRoleId(Guid roleId)
+    private void SetRoleId(Guid roleId)
     {
         if (roleId == Guid.Empty)
         {
