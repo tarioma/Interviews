@@ -3,10 +3,10 @@
 public record RequestApprovedEvent : IRequestEvent
 {
     public Guid Id { get; private init; }
-    public DateTime UtcDateTime { get; private init; }
+    public DateTime DateTime { get; private init; }
     public Guid RequestId { get; private init; }
 
-    private RequestApprovedEvent(Guid id, DateTime utcDateTime, Guid requestId)
+    private RequestApprovedEvent(Guid id, DateTime dateTime, Guid requestId)
     {
         if (id == Guid.Empty)
         {
@@ -19,7 +19,7 @@ public record RequestApprovedEvent : IRequestEvent
         }
 
         Id = id;
-        UtcDateTime = utcDateTime;
+        DateTime = dateTime;
         RequestId = requestId;
     }
 

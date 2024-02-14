@@ -3,6 +3,6 @@
 public interface IRequestEvent
 {
     Guid Id { get; }
-    DateTime UtcDateTime { get; }
+    DateTime DateTime { get; }
     Guid RequestId { get; }
 }

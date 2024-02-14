@@ -1,4 +1,5 @@
 ﻿using Interviews.Domain.Entities.Employees;
+using Interviews.Domain.Entities.WorkflowTemplates;
 
 namespace Interviews.Domain.Entities.Requests;
 
@@ -12,7 +13,7 @@ public record Workflow
     public string Name { get; private init; }
     public IReadOnlyCollection<WorkflowStep> Steps => _steps;
 
-    private Workflow(Guid workflowTemplateId, string name, List<WorkflowStep> steps)
+    private Workflow(Guid workflowTemplateId, string name, IEnumerable<WorkflowStep> steps)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentNullException.ThrowIfNull(steps);
@@ -32,9 +33,11 @@ public record Workflow
         _steps = steps;
     }
 
-    public static Workflow Create(Guid workflowTemplateId, string name)
+    public static Workflow Create(WorkflowTemplate workflowTemplate)
     {
-        var steps = new List<WorkflowStep>();
+        var workflowTemplateId = workflowTemplate.Id;
+        var name = workflowTemplate.Name;
+        var steps = workflowTemplate.Steps;
 
         return new Workflow(workflowTemplateId, name, steps);
     }
@@ -48,7 +51,7 @@ public record Workflow
         CheckTerminalState();
 
         var lastStep = GetLastStep();
-        lastStep.Approve(employee, comment);
+        lastStep.SetStatus(Status.Approved, employee, comment);
     }
 
     internal void Reject(Employee employee, string? comment = null)
@@ -56,7 +59,15 @@ public record Workflow
         CheckTerminalState();
         
         var lastStep = GetLastStep();
-        lastStep.Reject(employee, comment);
+        lastStep.SetStatus(Status.Rejected, employee, comment);
+    }
+    
+    internal void Restart(Employee employee)
+    {
+        foreach (var step in _steps)
+        {
+            step.SetStatus(Status.Pending, employee);
+        }
     }
     
     private void CheckTerminalState()
@@ -82,13 +93,5 @@ public record Workflow
         }
         
         return lastStep;
-    }
-    
-    internal void Restart(Employee employee)
-    {
-        foreach (var step in _steps)
-        {
-            step.ToPending(employee);
-        }
     }
 }

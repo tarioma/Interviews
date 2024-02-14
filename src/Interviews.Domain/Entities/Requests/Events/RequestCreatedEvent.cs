@@ -3,10 +3,10 @@
 public record RequestCreatedEvent : IRequestEvent
 {
     public Guid Id { get; private init; }
-    public DateTime UtcDateTime { get; private init; }
+    public DateTime DateTime { get; private init; }
     public Guid RequestId { get; private init; }
 
-    private RequestCreatedEvent(Guid id, DateTime utcDateTime, Guid requestId)
+    private RequestCreatedEvent(Guid id, DateTime dateTime, Guid requestId)
     {
         if (id == Guid.Empty)
         {
@@ -19,15 +19,15 @@ public record RequestCreatedEvent : IRequestEvent
         }
 
         Id = id;
-        UtcDateTime = utcDateTime;
+        DateTime = dateTime;
         RequestId = requestId;
     }
 
     public static RequestCreatedEvent Create(Guid requestId)
     {
         var id = Guid.NewGuid();
-        var utcDateTime = DateTime.UtcNow;
+        var dateTime = DateTime.UtcNow;
 
-        return new RequestCreatedEvent(id, utcDateTime, requestId);
+        return new RequestCreatedEvent(id, dateTime, requestId);
     }
 }

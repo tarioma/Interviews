@@ -1,4 +1,5 @@
 ﻿using Interviews.Domain.Entities.Employees;
+using Interviews.Domain.Entities.WorkflowTemplates;
 
 namespace Interviews.Domain.Entities.Requests;
 
@@ -14,7 +15,7 @@ public class WorkflowStep
     public Guid EmployeeId { get; private init; }
     public Guid RoleId { get; private init; }
 
-    public WorkflowStep(string name, int order, string? comment, Status status, Guid employeeId, Guid roleId)
+    private WorkflowStep(string name, int order, Status status, Guid employeeId, Guid roleId, string? comment = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
@@ -47,27 +48,18 @@ public class WorkflowStep
         SetStatus(status);
     }
 
-    public static WorkflowStep CreateByEmployeeId(string name, int order, string comment, Guid employeeId)
+    public static WorkflowStep Create(WorkflowStepTemplate workflowStepTemplate, string? comment = null)
     {
+        var name = workflowStepTemplate.Name;
+        var order = workflowStepTemplate.Order;
         var status = Status.Pending;
+        var employeeId = workflowStepTemplate.EmployeeId;
+        var roleId = workflowStepTemplate.RoleId;
 
-        return new WorkflowStep(name, order, comment, status, employeeId, Guid.Empty);
+        return new WorkflowStep(name, order, status, employeeId, roleId, comment);
     }
     
-    public static WorkflowStep CreateByRoleId(string name, int order, string comment, Guid roleId)
-    {
-        var status = Status.Pending;
-
-        return new WorkflowStep(name, order, comment, status, Guid.Empty, roleId);
-    }
-
-    internal void Approve(Employee employee, string? comment = null) => SetStatus(Status.Approved, employee, comment);
-    
-    internal void Reject(Employee employee, string? comment = null) => SetStatus(Status.Rejected, employee, comment);
-    
-    internal void ToPending(Employee employee) => SetStatus(Status.Pending, employee);
-    
-    private void SetStatus(Status status, Employee employee, string? comment = null)
+    internal void SetStatus(Status status, Employee employee, string? comment = null)
     {
         ArgumentNullException.ThrowIfNull(employee);
 
@@ -82,7 +74,7 @@ public class WorkflowStep
 
     private void SetStatus(Status status)
     {
-        if (status == Status.Undefined)
+        if (status == Status.None)
         {
             throw new ArgumentException("Не может иметь значение по умолчанию.", nameof(status));
         }
@@ -94,7 +86,7 @@ public class WorkflowStep
     {
         if (comment is null)
         {
-            return;
+            Comment = null;
         }
 
         if (string.IsNullOrWhiteSpace(comment))

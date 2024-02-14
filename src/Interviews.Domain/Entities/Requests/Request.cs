@@ -11,21 +11,29 @@ public class Request
     public Guid Id { get; private init; }
     public Document Document { get; private set; }
     public Workflow Workflow { get; private set; }
-    public Guid EmployeeId { get; private set; }
+    public Guid EmployeeId { get; private init; }
     public IReadOnlyCollection<IRequestEvent> Events => _events;
 
     private Request(Guid id, Document document, Workflow workflow, Guid employeeId)
     {
+        ArgumentNullException.ThrowIfNull(document);
+
         if (id == Guid.Empty)
         {
             throw new ArgumentException("Не может быть пустым.", nameof(id));
         }
 
+        if (employeeId == Guid.Empty)
+        {
+            throw new ArgumentException("Не может быть пустым.", nameof(employeeId));
+        }
+
         Id = id;
-        SetDocument(document);
-        SetWorkflow(workflow);
-        SetEmployeeId(employeeId);
+        Document = document;
+        EmployeeId = employeeId;
         _events = new List<IRequestEvent>();
+
+        SetWorkflow(workflow);
     }
 
     public static Request Create(Document document, Workflow workflow, Guid employeeId)
@@ -37,6 +45,32 @@ public class Request
         request._events.Add(requestCreatedEvent);
 
         return request;
+    }
+
+    public bool IsApproved() => Workflow.IsApproved();
+
+    public bool IsRejected() => Workflow.IsRejected();
+
+    public void Approve(Employee employee, string? comment = null)
+    {
+        Workflow.Approve(employee, comment);
+
+        _events.Add(IsApproved()
+            ? RequestApprovedEvent.Create(Id)
+            : RequestNextStepEvent.Create(Id));
+    }
+
+    public void Reject(Employee employee, string? comment = null)
+    {
+        Workflow.Reject(employee, comment);
+        _events.Add(RequestRejectedEvent.Create(Id));
+    }
+
+    public void Restart(Employee employee, Document document)
+    {
+        SetDocument(document);
+        Workflow.Restart(employee);
+        _events.Add(RequestRestartedEvent.Create(Id));
     }
 
     [MemberNotNull(nameof(Document))]
@@ -53,37 +87,5 @@ public class Request
         ArgumentNullException.ThrowIfNull(workflow);
 
         Workflow = workflow;
-    }
-
-    private void SetEmployeeId(Guid employeeId)
-    {
-        if (employeeId == Guid.Empty)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(employeeId));
-        }
-
-        EmployeeId = employeeId;
-    }
-
-    public bool IsApproved() => Workflow.IsApproved();
-
-    public bool IsRejected() => Workflow.IsRejected();
-
-    public void Approve(Employee employee, string? comment = null)
-    {
-        _events.Add(RequestApprovedEvent.Create(Id));
-        Workflow.Approve(employee, comment);
-    }
-
-    public void Reject(Employee employee, string? comment = null)
-    {
-        _events.Add(RequestRejectedEvent.Create(Id));
-        Workflow.Reject(employee, comment);
-    }
-    
-    public void Restart(Employee employee)
-    {
-        _events.Add(RequestRestartedEvent.Create(Id));
-        Workflow.Restart(employee);
     }
 }

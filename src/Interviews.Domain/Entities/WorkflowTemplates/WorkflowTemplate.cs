@@ -69,5 +69,5 @@ public class WorkflowTemplate
     }
 
     // TODO
-    // public Request Create(Employee employee, Document document) => Request.Create(document, Workflow.Create(), employee.Id);
+    // public Request Create(Employee user, Document document) => Request.Create(document, Workflow.Create(), user.Id);
 }

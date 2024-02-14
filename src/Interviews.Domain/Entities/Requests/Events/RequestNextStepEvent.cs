@@ -1,12 +1,12 @@
 ﻿namespace Interviews.Domain.Entities.Requests.Events;
 
-public record RequestRejectedEvent : IRequestEvent
+public record RequestNextStepEvent : IRequestEvent
 {
     public Guid Id { get; private init; }
     public DateTime DateTime { get; private init; }
     public Guid RequestId { get; private init; }
 
-    private RequestRejectedEvent(Guid id, DateTime dateTime, Guid requestId)
+    private RequestNextStepEvent(Guid id, DateTime dateTime, Guid requestId)
     {
         if (id == Guid.Empty)
         {
@@ -23,11 +23,11 @@ public record RequestRejectedEvent : IRequestEvent
         RequestId = requestId;
     }
 
-    public static RequestRejectedEvent Create(Guid requestId)
+    public static RequestNextStepEvent Create(Guid requestId)
     {
         var id = Guid.NewGuid();
         var dateTime = DateTime.UtcNow;
 
-        return new RequestRejectedEvent(id, dateTime, requestId);
+        return new RequestNextStepEvent(id, dateTime, requestId);
     }
 }
