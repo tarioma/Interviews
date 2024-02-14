@@ -8,6 +8,7 @@ classDiagram
     IRequestEvent --> RequestApprovedEvent
     IRequestEvent --> RequestRejectEvent
     IRequestEvent --> RequestRestartedEvent
+    IRequestEvent --> RequestNextStepEvent
     Workflow --> WorkflowStep
     WorkflowTemplate --> WorkflowStepTemplate
 
@@ -46,6 +47,8 @@ classDiagram
     class RequestRejectEvent{
     }
     class RequestRestartedEvent{
+    }
+    class RequestNextStepEvent{
     }
     class Document{
         Name
