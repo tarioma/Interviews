@@ -1,5 +1,4 @@
-﻿using Interviews.Domain.Entities.Employees;
-using Interviews.Domain.Entities.WorkflowTemplates;
+﻿using Interviews.Domain.Entities.WorkflowTemplates;
 
 namespace Interviews.Domain.Entities.Requests;
 
@@ -10,12 +9,12 @@ public class WorkflowStep
 
     public string Name { get; private init; }
     public int Order { get; private init; }
-    public Status Status { get; private set; }
-    public string? Comment { get; private set; }
     public Guid EmployeeId { get; private init; }
     public Guid RoleId { get; private init; }
+    public Status Status { get; private set; }
+    public string? Comment { get; private set; }
 
-    private WorkflowStep(string name, int order, Status status, Guid employeeId, Guid roleId, string? comment = null)
+    private WorkflowStep(string name, int order, Guid employeeId, Guid roleId, Status status, string? comment = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
@@ -39,11 +38,10 @@ public class WorkflowStep
             throw new ArgumentException($"Можно назначить только {nameof(employeeId)} или {nameof(roleId)}.");
         }
 
-        Name = name.Trim();
+        Name = name;
         Order = order;
         EmployeeId = employeeId;
         RoleId = roleId;
-
         SetComment(comment);
         SetStatus(status);
     }
@@ -52,27 +50,14 @@ public class WorkflowStep
     {
         var name = workflowStepTemplate.Name;
         var order = workflowStepTemplate.Order;
-        var status = Status.Pending;
         var employeeId = workflowStepTemplate.EmployeeId;
         var roleId = workflowStepTemplate.RoleId;
+        var status = Status.Pending;
 
-        return new WorkflowStep(name, order, status, employeeId, roleId, comment);
-    }
-    
-    internal void SetStatus(Status status, Employee employee, string? comment = null)
-    {
-        ArgumentNullException.ThrowIfNull(employee);
-
-        if (employee.Id != EmployeeId && employee.RoleId != RoleId)
-        {
-            throw new ArgumentException("Пользователь не может изменить статус данного шага.", nameof(employee));
-        }
-
-        SetStatus(status);
-        SetComment(comment);
+        return new WorkflowStep(name, order, employeeId, roleId, status, comment);
     }
 
-    private void SetStatus(Status status)
+    internal void SetStatus(Status status)
     {
         if (status == Status.None)
         {
@@ -82,7 +67,7 @@ public class WorkflowStep
         Status = status;
     }
 
-    private void SetComment(string? comment)
+    internal void SetComment(string? comment)
     {
         if (comment is null)
         {

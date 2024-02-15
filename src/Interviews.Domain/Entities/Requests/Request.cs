@@ -32,7 +32,6 @@ public class Request
         Document = document;
         EmployeeId = employeeId;
         _events = new List<IRequestEvent>();
-
         SetWorkflow(workflow);
     }
 
@@ -69,7 +68,7 @@ public class Request
     public void Restart(Employee employee, Document document)
     {
         SetDocument(document);
-        Workflow.Restart(employee);
+        Workflow.Restart();
         _events.Add(RequestRestartedEvent.Create(Id));
     }
 

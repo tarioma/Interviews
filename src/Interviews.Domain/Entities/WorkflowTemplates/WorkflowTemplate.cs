@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Interviews.Domain.Entities.Employees;
+using Interviews.Domain.Entities.Requests;
 
 namespace Interviews.Domain.Entities.WorkflowTemplates;
 
@@ -53,7 +55,7 @@ public class WorkflowTemplate
         
         steps = steps.ToArray();
         
-        // Являются ли номера шагов уникальной порядковой последовательностью от 0 до их количества 
+        // Являются ли номера шагов уникальной возрастающей порядковой последовательностью от 0 до их количества 
         var isCorrectOrder = steps
             .OrderBy(s => s.Order)
             .Select(s => s.Order)
@@ -68,6 +70,9 @@ public class WorkflowTemplate
         _steps = steps.ToList();
     }
 
-    // TODO
-    // public Request Create(Employee user, Document document) => Request.Create(document, Workflow.Create(), user.Id);
+    public Request Create(Employee employee, Document document)
+    {
+        var workflow = Workflow.Create(this);
+        return Request.Create(document, workflow, employee.Id);
+    }
 }

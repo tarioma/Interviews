@@ -30,14 +30,22 @@ public record Workflow
 
         WorkflowTemplateId = workflowTemplateId;
         Name = name;
-        _steps = steps;
+        _steps = steps.ToList();
     }
 
     public static Workflow Create(WorkflowTemplate workflowTemplate)
     {
+        ArgumentNullException.ThrowIfNull(workflowTemplate);
+        ArgumentNullException.ThrowIfNull(workflowTemplate.Steps);
+
+        if (workflowTemplate.Steps.Count == 0)
+        {
+            throw new ArgumentException("Список шагов не может быть пустым.", nameof(workflowTemplate));
+        }
+        
         var workflowTemplateId = workflowTemplate.Id;
         var name = workflowTemplate.Name;
-        var steps = workflowTemplate.Steps;
+        var steps = workflowTemplate.Steps.Select(s => WorkflowStep.Create(s));
 
         return new Workflow(workflowTemplateId, name, steps);
     }
@@ -51,7 +59,10 @@ public record Workflow
         CheckTerminalState();
 
         var lastStep = GetLastStep();
-        lastStep.SetStatus(Status.Approved, employee, comment);
+        VerifyRights(employee, lastStep);
+        
+        lastStep.SetStatus(Status.Approved);
+        lastStep.SetComment(comment);
     }
 
     internal void Reject(Employee employee, string? comment = null)
@@ -59,14 +70,18 @@ public record Workflow
         CheckTerminalState();
         
         var lastStep = GetLastStep();
-        lastStep.SetStatus(Status.Rejected, employee, comment);
+        VerifyRights(employee, lastStep);
+        
+        lastStep.SetStatus(Status.Rejected);
+        lastStep.SetComment(comment);
     }
     
-    internal void Restart(Employee employee)
+    internal void Restart()
     {
         foreach (var step in _steps)
         {
-            step.SetStatus(Status.Pending, employee);
+            step.SetStatus(Status.Pending);
+            step.SetComment(null);
         }
     }
     
@@ -93,5 +108,13 @@ public record Workflow
         }
         
         return lastStep;
+    }
+    
+    private static void VerifyRights(Employee employee, WorkflowStep workflowStep)
+    {
+        if (employee.Id != workflowStep.EmployeeId && employee.RoleId != workflowStep.RoleId)
+        {
+            throw new ArgumentException("Пользователь не может изменить статус данного шага.", nameof(employee));
+        }
     }
 }
