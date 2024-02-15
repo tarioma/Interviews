@@ -1,15 +1,14 @@
 ```mermaid
 classDiagram
     Employee --> Role
-    Employee --> EmailAddress
     Request --> Document
     Request --> Workflow
     Request --> IRequestEvent
-    Document --> EmailAddress
     IRequestEvent --> RequestCreateEvent
     IRequestEvent --> RequestApprovedEvent
     IRequestEvent --> RequestRejectEvent
     IRequestEvent --> RequestRestartedEvent
+    IRequestEvent --> RequestNextStepEvent
     Workflow --> WorkflowStep
     WorkflowTemplate --> WorkflowStepTemplate
 
@@ -22,9 +21,6 @@ classDiagram
     class Role{
         Id
         Name
-    }
-    class EmailAddress{
-        Value
     }
     class Request{
         Id
@@ -51,6 +47,8 @@ classDiagram
     class RequestRejectEvent{
     }
     class RequestRestartedEvent{
+    }
+    class RequestNextStepEvent{
     }
     class Document{
         Name
