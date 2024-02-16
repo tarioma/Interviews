@@ -3,12 +3,12 @@ classDiagram
     Employee --> Role
     Request --> Document
     Request --> Workflow
-    Request --> IRequestEvent
-    IRequestEvent --> RequestCreateEvent
-    IRequestEvent --> RequestApprovedEvent
-    IRequestEvent --> RequestRejectEvent
-    IRequestEvent --> RequestRestartedEvent
-    IRequestEvent --> RequestNextStepEvent
+    Request --> RequestEvent
+    RequestEvent --> RequestCreatedEvent
+    RequestEvent --> RequestApprovedEvent
+    RequestEvent --> RequestRejectEvent
+    RequestEvent --> RequestRestartedEvent
+    RequestEvent --> RequestNextStepEvent
     Workflow --> WorkflowStep
     WorkflowTemplate --> WorkflowStepTemplate
 
@@ -27,20 +27,20 @@ classDiagram
         Document 
         Workflow
         EmployeeId
-        Events IRequestEvent[]
+        Events RequestEvent[]
         
         IsApproved()
         IsReject()
         Approve(Employee, comment?)
         Reject(Employee, comment?)
-        Restart(Employee)
+        Restart(Document)
     }
-    class IRequestEvent{
+    class RequestEvent{
         Id
-        UtcDateTime
+        DateTime
         RequestId
     }
-    class RequestCreateEvent{
+    class RequestCreatedEvent{
     }
     class RequestApprovedEvent{
     }
@@ -69,28 +69,26 @@ classDiagram
     class WorkflowStep{
         Name
         Order
-        Comment
-        Status?
         EmployeeId?
         RoleId?
+        Status?
+        Comment
         
-        CreateByEmployeeId()
-        CreateByRoleId()
         Approve(Employee, comment?)
         Reject(Employee, comment?)
-        ToPending(Employee)
+        ToPending()
     }
     class WorkflowTemplate{
         Id
         Name
         Steps WorkflowStepTemplate[]
-        Create(Employee, Document) Request
+        CreateRequest(Employee, Document) Request
     }
 
     class WorkflowStepTemplate{
         Name
         Order
-        EmployeeId?
-        RoleId?
+        EmployeeId
+        RoleId
     }
 ```
