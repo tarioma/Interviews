@@ -19,7 +19,7 @@ public record Document
             throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));
         }
 
-        if (IsDateOfBirthAcceptable(dateOfBirth))
+        if (!IsAgeAcceptable(dateOfBirth))
         {
             throw new ArgumentException($"Минимальный допустимый возраст {MinAcceptableAge} лет.", nameof(name));
         }
@@ -29,13 +29,11 @@ public record Document
         EmailAddress = emailAddress;
     }
 
-    private static bool IsDateOfBirthAcceptable(DateOnly dateOfBirth)
+    private static bool IsAgeAcceptable(DateOnly dateOfBirth)
     {
-        var acceptableDateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-MinAcceptableAge));
-        
-        // Погрешность в 1 день из-за возможной разницы с UTC
-        acceptableDateOfBirth = acceptableDateOfBirth.AddDays(1);
+        var currentYear = DateTime.UtcNow.Year;
+        var age = currentYear - dateOfBirth.Year;
 
-        return acceptableDateOfBirth < dateOfBirth;
+        return age >= MinAcceptableAge;
     }
 }

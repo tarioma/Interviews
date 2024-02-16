@@ -65,7 +65,7 @@ public class Request
         _events.Add(RequestRejectedEvent.Create(Id));
     }
 
-    public void Restart(Employee employee, Document document)
+    public void Restart(Document document)
     {
         SetDocument(document);
         Workflow.Restart();
