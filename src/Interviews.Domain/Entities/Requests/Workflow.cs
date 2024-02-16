@@ -6,12 +6,10 @@ namespace Interviews.Domain.Entities.Requests;
 public record Workflow
 {
     private const int MaxNameLength = 100;
-
-    private readonly List<WorkflowStep> _steps;
     
     public Guid WorkflowTemplateId { get; private init; }
     public string Name { get; private init; }
-    public IReadOnlyCollection<WorkflowStep> Steps => _steps;
+    public IReadOnlyCollection<WorkflowStep> Steps { get; private init; }
 
     private Workflow(Guid workflowTemplateId, string name, IEnumerable<WorkflowStep> steps)
     {
@@ -28,9 +26,12 @@ public record Workflow
             throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));
         }
 
+        var stepsList = steps.ToList();
+        ValidateSteps(stepsList);
+
         WorkflowTemplateId = workflowTemplateId;
         Name = name;
-        _steps = steps.ToList();
+        Steps = stepsList;
     }
 
     public static Workflow Create(WorkflowTemplate workflowTemplate)
@@ -58,30 +59,23 @@ public record Workflow
     {
         CheckTerminalState();
 
-        var lastStep = GetLastStep();
-        VerifyRights(employee, lastStep);
-        
-        lastStep.SetStatus(Status.Approved);
-        lastStep.SetComment(comment);
+        var activeStep = GetActiveStep();
+        activeStep.Approve(employee, comment);
     }
 
     internal void Reject(Employee employee, string? comment = null)
     {
         CheckTerminalState();
         
-        var lastStep = GetLastStep();
-        VerifyRights(employee, lastStep);
-        
-        lastStep.SetStatus(Status.Rejected);
-        lastStep.SetComment(comment);
+        var activeStep = GetActiveStep();
+        activeStep.Reject(employee, comment);
     }
     
     internal void Restart()
     {
-        foreach (var step in _steps)
+        foreach (var step in Steps)
         {
-            step.SetStatus(Status.Pending);
-            step.SetComment(null);
+            step.ToPending();
         }
     }
     
@@ -98,23 +92,37 @@ public record Workflow
         }
     }
     
-    private WorkflowStep GetLastStep()
+    private WorkflowStep GetActiveStep()
     {
-        var lastStep = Steps.Where(s => s.Status == Status.Pending).MinBy(s => s.Order);
+        var activeStep = Steps.Where(s => s.Status == Status.Pending).MinBy(s => s.Order);
 
-        if (lastStep is null)
+        if (activeStep is null)
         {
             throw new Exception("Нет шага со статусом ожидания.");
         }
         
-        return lastStep;
+        return activeStep;
     }
     
-    private static void VerifyRights(Employee employee, WorkflowStep workflowStep)
+    private static void ValidateSteps(List<WorkflowStep> steps)
     {
-        if (employee.Id != workflowStep.EmployeeId && employee.RoleId != workflowStep.RoleId)
+        ArgumentNullException.ThrowIfNull(steps);
+
+        if (steps.Count == 0)
         {
-            throw new ArgumentException("Пользователь не может изменить статус данного шага.", nameof(employee));
+            throw new ArgumentException("Не может быть пустым.", nameof(steps));
+        }
+        
+        // Являются ли номера шагов уникальной возрастающей порядковой последовательностью от 0 до их количества 
+        var isCorrectOrder = steps
+            .OrderBy(s => s.Order)
+            .Select(s => s.Order)
+            .SequenceEqual(Enumerable.Range(0, steps.Count));
+        
+        if (!isCorrectOrder)
+        {
+            throw new ArgumentException("Номера шагов должны быть уникальной порядковой последовательностью от 0.",
+                nameof(steps));
         }
     }
 }

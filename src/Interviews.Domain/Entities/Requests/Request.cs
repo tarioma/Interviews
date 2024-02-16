@@ -6,13 +6,13 @@ namespace Interviews.Domain.Entities.Requests;
 
 public class Request
 {
-    private readonly List<IRequestEvent> _events;
+    private readonly List<RequestEvent> _events;
 
     public Guid Id { get; private init; }
     public Document Document { get; private set; }
     public Workflow Workflow { get; private set; }
     public Guid EmployeeId { get; private init; }
-    public IReadOnlyCollection<IRequestEvent> Events => _events;
+    public IReadOnlyCollection<RequestEvent> Events => _events;
 
     private Request(Guid id, Document document, Workflow workflow, Guid employeeId)
     {
@@ -31,7 +31,7 @@ public class Request
         Id = id;
         Document = document;
         EmployeeId = employeeId;
-        _events = new List<IRequestEvent>();
+        _events = new List<RequestEvent>();
         SetWorkflow(workflow);
     }
 

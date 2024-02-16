@@ -1,4 +1,5 @@
-﻿using Interviews.Domain.Entities.WorkflowTemplates;
+﻿using Interviews.Domain.Entities.Employees;
+using Interviews.Domain.Entities.WorkflowTemplates;
 
 namespace Interviews.Domain.Entities.Requests;
 
@@ -57,7 +58,37 @@ public class WorkflowStep
         return new WorkflowStep(name, order, employeeId, roleId, status, comment);
     }
 
-    internal void SetStatus(Status status)
+    internal void Approve(Employee employee, string? comment = null)
+    {
+        VerifyRights(employee);
+        
+        SetStatus(Status.Approved);
+        SetComment(comment);
+    }
+    
+    internal void Reject(Employee employee, string? comment = null)
+    {
+        VerifyRights(employee);
+        
+        SetStatus(Status.Rejected);
+        SetComment(comment);
+    }
+
+    internal void ToPending()
+    {
+        SetStatus(Status.Pending);
+        SetComment(null);
+    }
+
+    private void VerifyRights(Employee employee)
+    {
+        if (employee.Id != EmployeeId && employee.RoleId != RoleId)
+        {
+            throw new ArgumentException("Пользователь не может изменить статус данного шага.", nameof(employee));
+        }
+    }
+
+    private void SetStatus(Status status)
     {
         if (status == Status.None)
         {
@@ -67,7 +98,7 @@ public class WorkflowStep
         Status = status;
     }
 
-    internal void SetComment(string? comment)
+    private void SetComment(string? comment)
     {
         if (comment is null)
         {
