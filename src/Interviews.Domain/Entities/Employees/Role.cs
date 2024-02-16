@@ -4,12 +4,11 @@ namespace Interviews.Domain.Entities.Employees;
 
 public class Role
 {
-    public const int MaxNameLength = 100;
+    private const int MaxNameLength = 100;
     
     public Guid Id { get; private init; }
     public string Name { get; private set; }
 
-    [ExcludeFromCodeCoverage]
     private Role(Guid id, string name)
     {
         if (id == Guid.Empty)
