@@ -6,7 +6,7 @@ namespace Interviews.Domain.Entities.WorkflowTemplates;
 
 public class WorkflowTemplate
 {
-    private const int MaxNameLength = 100;
+    public const int MaxNameLength = 100;
     
     public Guid Id { get; private init; }
     public string Name { get; private set; }

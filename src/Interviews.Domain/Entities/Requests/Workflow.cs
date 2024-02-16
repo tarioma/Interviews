@@ -5,7 +5,7 @@ namespace Interviews.Domain.Entities.Requests;
 
 public record Workflow
 {
-    private const int MaxNameLength = 100;
+    public const int MaxNameLength = 100;
     
     public Guid WorkflowTemplateId { get; private init; }
     public string Name { get; private init; }

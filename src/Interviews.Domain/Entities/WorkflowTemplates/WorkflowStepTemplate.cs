@@ -2,7 +2,7 @@
 
 public record WorkflowStepTemplate
 {
-    private const int MaxNameLength = 100;
+    public const int MaxNameLength = 100;
 
     public string Name { get; private init; }
     public int Order { get; private init; }

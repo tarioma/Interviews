@@ -2,8 +2,8 @@
 
 public record Document
 {
-    private const int MaxNameLength = 100;
-    private const int MinAcceptableAge = 18;
+    public const int MaxNameLength = 100;
+    public const int MinAcceptableAge = 18;
     
     public string Name { get; private init; }
     public DateOnly DateOfBirth { get; private init; }

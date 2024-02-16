@@ -5,8 +5,8 @@ namespace Interviews.Domain.Entities.Requests;
 
 public class WorkflowStep
 {
-    private const int MaxNameLength = 100;
-    private const int MaxCommentLength = 500;
+    public const int MaxNameLength = 100;
+    public const int MaxCommentLength = 500;
 
     public string Name { get; private init; }
     public int Order { get; private init; }

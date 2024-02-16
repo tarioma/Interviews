@@ -2,7 +2,7 @@
 
 public record EmailAddress
 {
-    private const int MaxValueLength = 100;
+    public const int MaxValueLength = 100;
     
     public string Value { get; private init; }
 

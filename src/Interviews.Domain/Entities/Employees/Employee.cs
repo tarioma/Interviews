@@ -4,7 +4,7 @@ namespace Interviews.Domain.Entities.Employees;
 
 public class Employee
 {
-    private const int MaxNameLength = 100;
+    public const int MaxNameLength = 100;
     
     public Guid Id { get; private init; }
     public string Name { get; private set; }
