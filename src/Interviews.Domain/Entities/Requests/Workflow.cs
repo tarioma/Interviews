@@ -11,7 +11,7 @@ public record Workflow
     public string Name { get; private init; }
     public IReadOnlyCollection<WorkflowStep> Steps { get; private init; }
 
-    private Workflow(Guid workflowTemplateId, string name, IEnumerable<WorkflowStep> steps)
+    public Workflow(Guid workflowTemplateId, string name, IEnumerable<WorkflowStep> steps)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
         ArgumentNullException.ThrowIfNull(steps);

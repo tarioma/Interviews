@@ -12,7 +12,7 @@ public class WorkflowTemplate
     public string Name { get; private set; }
     public IReadOnlyCollection<WorkflowStepTemplate> Steps { get; private init; }
 
-    private WorkflowTemplate(Guid id, string name, IEnumerable<WorkflowStepTemplate> steps)
+    public WorkflowTemplate(Guid id, string name, IEnumerable<WorkflowStepTemplate> steps)
     {
         ArgumentNullException.ThrowIfNull(steps);
         

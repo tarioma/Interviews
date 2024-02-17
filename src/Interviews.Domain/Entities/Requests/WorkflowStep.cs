@@ -15,7 +15,7 @@ public class WorkflowStep
     public Status Status { get; private set; }
     public string? Comment { get; private set; }
 
-    private WorkflowStep(string name, int order, Guid employeeId, Guid roleId, Status status, string? comment = null)
+    public WorkflowStep(string name, int order, Guid employeeId, Guid roleId, Status status, string? comment = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 

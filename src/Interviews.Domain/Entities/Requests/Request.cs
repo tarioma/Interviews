@@ -14,7 +14,7 @@ public class Request
     public Guid EmployeeId { get; private init; }
     public IReadOnlyCollection<RequestEvent> Events => _events;
 
-    private Request(Guid id, Document document, Workflow workflow, Guid employeeId)
+    public Request(Guid id, Document document, Workflow workflow, Guid employeeId)
     {
         ArgumentNullException.ThrowIfNull(document);
 

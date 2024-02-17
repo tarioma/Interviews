@@ -9,7 +9,7 @@ public class Role
     public Guid Id { get; private init; }
     public string Name { get; private set; }
 
-    private Role(Guid id, string name)
+    public Role(Guid id, string name)
     {
         if (id == Guid.Empty)
         {
