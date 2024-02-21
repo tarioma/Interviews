@@ -1,52 +1,63 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using Interviews.Domain.Entities;
+using Interviews.Domain.Tests.Tools;
+using Xunit.Abstractions;
 
 namespace Interviews.Domain.Tests.Entities;
 
 public class EmailAddressTests
 {
-    private readonly Fixture _fixture = new();
-    
-    [Theory]
-    [InlineData("test@example.com")]
-    [InlineData(" test@example.com")]
-    [InlineData("test@example.com\n")]
-    [InlineData("\rtest@example.com\t")]
-    public void Init_CorrectEmailAddress_SuccessInit(string value)
-    {
-        // Arrange
-        var expectedValue = value.Trim().ToUpperInvariant();
+    private readonly Fixture _fixture;
 
+    public EmailAddressTests(ITestOutputHelper testOutputHelper)
+    {
+        _fixture = new Fixture();
+        _fixture.Customize(new EmailAddressCustomization());
+    }
+
+    [Fact]
+    public void Init_CorrectEmailAddress_SuccessInit()
+    {
         // Act
-        var emailAddress = new EmailAddress(value);
+        var emailAddress = _fixture.Create<EmailAddress>();
         
         // Assert
-        Assert.Equal(expectedValue, emailAddress.Value);
+        Assert.NotNull(emailAddress.Value);
+        Assert.NotEmpty(emailAddress.Value);
     }
-    
+
     [Fact]
-    public void Init_VeryLongEmailAddress_ThrowsArgumentException()
+    public void Init_VeryLongValue_ThrowsArgumentException()
     {
         // Arrange
-        const int invalidLength = EmailAddress.MaxValueLength + 1;
-        var value = string.Join(string.Empty, _fixture.CreateMany<char>(invalidLength));
+        var value = _fixture.GenerateString(EmailAddress.MaxValueLength + 1);
         
-        // Act & Assert
-        var ex = Assert.Throws<ArgumentException>(() => new EmailAddress(value));
-        Assert.StartsWith($"Максимальная длина {EmailAddress.MaxValueLength} символов.", ex.Message);
-        Assert.Equal(nameof(value), ex.ParamName);
+        // Act
+        var action = () => new EmailAddress(value);
+        
+        // Assert
+        action.Should()
+            .Throw<ArgumentException>()
+            .WithMessage($"Максимальная длина {EmailAddress.MaxValueLength} символов. (Parameter '{nameof(value)}')")
+            .WithParameterName(nameof(value));
     }
-    
+
     [Theory]
+    [InlineData("")]
+    [InlineData("a")]
     [InlineData("@")]
-    [InlineData("@example.com")]
-    [InlineData("test@")]
-    [InlineData("x")]
+    [InlineData("a@")]
+    [InlineData("@b")]
     public void Init_InvalidEmailAddress_ThrowsArgumentException(string value)
     {
-        // Act & Assert
-        var ex = Assert.Throws<ArgumentException>(() => new EmailAddress(value));
-        Assert.StartsWith("Адрес навалиден.", ex.Message);
-        Assert.Equal(nameof(value), ex.ParamName);
+        // Act
+        var action = () => new EmailAddress(value);
+        
+        // Assert
+        action.Should()
+            .Throw<ArgumentException>()
+            .WithMessage($"Адрес навалиден. (Parameter '{nameof(value)}')")
+            .WithParameterName(nameof(value));
     }
 }

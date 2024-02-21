@@ -26,23 +26,15 @@ public record Workflow
             throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));
         }
 
-        var stepsList = steps.ToList();
-        ValidateSteps(stepsList);
-
         WorkflowTemplateId = workflowTemplateId;
         Name = name;
-        Steps = stepsList;
+        Steps = steps.ToList();
     }
 
     public static Workflow Create(WorkflowTemplate workflowTemplate)
     {
         ArgumentNullException.ThrowIfNull(workflowTemplate);
         ArgumentNullException.ThrowIfNull(workflowTemplate.Steps);
-
-        if (workflowTemplate.Steps.Count == 0)
-        {
-            throw new ArgumentException("Список шагов не может быть пустым.", nameof(workflowTemplate));
-        }
         
         var workflowTemplateId = workflowTemplate.Id;
         var name = workflowTemplate.Name;
@@ -102,27 +94,5 @@ public record Workflow
         }
         
         return activeStep;
-    }
-    
-    private static void ValidateSteps(List<WorkflowStep> steps)
-    {
-        ArgumentNullException.ThrowIfNull(steps);
-
-        if (steps.Count == 0)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(steps));
-        }
-        
-        // Являются ли номера шагов уникальной возрастающей порядковой последовательностью от 0 до их количества 
-        var isCorrectOrder = steps
-            .OrderBy(s => s.Order)
-            .Select(s => s.Order)
-            .SequenceEqual(Enumerable.Range(0, steps.Count));
-        
-        if (!isCorrectOrder)
-        {
-            throw new ArgumentException("Номера шагов должны быть уникальной порядковой последовательностью от 0.",
-                nameof(steps));
-        }
     }
 }

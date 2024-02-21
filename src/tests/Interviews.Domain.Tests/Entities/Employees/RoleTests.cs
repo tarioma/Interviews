@@ -5,7 +5,12 @@ namespace Interviews.Domain.Tests.Entities.Employees;
 
 public class RoleTests
 {
-    private readonly Fixture _fixture = new();
+    private readonly Fixture _fixture;
+
+    public RoleTests()
+    {
+        _fixture = new Fixture();
+    }
 
     [Fact]
     public void Init_CorrectParams_SuccessInit()
