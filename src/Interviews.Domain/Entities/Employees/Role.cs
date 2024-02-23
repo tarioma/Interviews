@@ -1,4 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Ardalis.GuardClauses;
+using GuardClauses;
+using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Employees;
 
@@ -11,10 +14,7 @@ public class Role
 
     public Role(Guid id, string name)
     {
-        if (id == Guid.Empty)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(id));
-        }
+        Guard.Against.GuidIsEmpty(id);
 
         Id = id;
         SetName(name);
@@ -30,12 +30,8 @@ public class Role
     [MemberNotNull(nameof(Name))]
     private void SetName(string name)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-
-        if (name.Length > MaxNameLength)
-        {
-            throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));   
-        }
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.StringTooLong(name, MaxNameLength);
 
         Name = name.Trim();
     }

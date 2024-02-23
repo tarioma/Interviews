@@ -1,4 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Ardalis.GuardClauses;
+using GuardClauses;
+using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Employees;
 
@@ -13,10 +16,7 @@ public class Employee
 
     public Employee(Guid id, string name, EmailAddress emailAddress, Guid roleId)
     {
-        if (id == Guid.Empty)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(id));
-        }
+        Guard.Against.GuidIsEmpty(id);
 
         Id = id;
         SetName(name);
@@ -34,12 +34,8 @@ public class Employee
     [MemberNotNull(nameof(Name))]
     private void SetName(string name)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-
-        if (name.Length > MaxNameLength)
-        {
-            throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));
-        }
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.StringTooLong(name, MaxNameLength);
         
         Name = name.Trim();
     }
@@ -47,18 +43,15 @@ public class Employee
     [MemberNotNull(nameof(EmailAddress))]
     private void SetEmailAddress(EmailAddress emailAddress)
     {
-        ArgumentNullException.ThrowIfNull(emailAddress);
+        Guard.Against.Null(emailAddress);
         
         EmailAddress = emailAddress;
     }
     
     private void SetRoleId(Guid roleId)
     {
-        if (roleId == Guid.Empty)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(roleId));
-        }
-
+        Guard.Against.GuidIsEmpty(roleId);
+        
         RoleId = roleId;
     }
 }

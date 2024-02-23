@@ -1,5 +1,7 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using Interviews.Domain.Entities.Employees;
+using Interviews.Domain.Tests.Tools;
 
 namespace Interviews.Domain.Tests.Entities.Employees;
 
@@ -17,14 +19,48 @@ public class RoleTests
     {
         // Arrange
         var id = Guid.NewGuid();
-        var name = string.Join(string.Empty, _fixture.CreateMany<char>(Role.MaxNameLength));
+        var name = _fixture.GenerateString(Role.MaxNameLength);
         
         // Act
         var role = new Role(id, name);
         
         // Assert
-        Assert.Equal(id, role.Id);
-        Assert.Equal(name, role.Name);
+        role.Id.Should().Be(id);
+        role.Name.Should().Be(name);
+    }
+    
+    [Fact]
+    public void Init_EmptyGuidId_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var id = Guid.Empty;
+        var name = _fixture.GenerateString(Role.MaxNameLength);
+        
+        // Act
+        var action = () => new Role(id, name);
+        
+        // Assert
+        action.Should()
+            .Throw<ArgumentException>()
+            .WithParameterName(nameof(id));
+    }
+    
+    [Theory]
+    [InlineData(null!)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        
+        // Act
+        var action = () => new Role(id, name);
+        
+        // Assert
+        action.Should()
+            .Throw<ArgumentException>()
+            .WithParameterName(nameof(name));
     }
     
     [Fact]
@@ -33,51 +69,29 @@ public class RoleTests
         // Arrange
         var id = Guid.NewGuid();
         const int invalidLength = Role.MaxNameLength + 1;
-        var name = string.Join(string.Empty, _fixture.CreateMany<char>(invalidLength));
+        var name = _fixture.GenerateString(invalidLength);
 
-        // Act & Assert
-        var ex = Assert.Throws<ArgumentException>(() => new Role(id, name));
-        Assert.StartsWith($"Максимальная длина {Role.MaxNameLength} символов.", ex.Message);
-        Assert.Equal(nameof(name), ex.ParamName);
+        // Act
+        var action = () => new Role(id, name);
+        
+        // Assert
+        action.Should()
+            .Throw<ArgumentException>()
+            .WithParameterName(nameof(name));
     }
     
     [Fact]
-    public void Create_CorrectName_SuccessInit()
+    public void Create_CorrectParams_SuccessCreateAndReturn()
     {
         // Arrange
-        var name = string.Join(string.Empty, _fixture.CreateMany<char>(Role.MaxNameLength));
+        var name = _fixture.GenerateString(Role.MaxNameLength);
 
         // Act
         var role = Role.Create(name);
-        
-        // Assert
-        Assert.Equal(name, role.Name);
-        Assert.NotEqual(Guid.Empty, role.Id);
-    }
-    
-    [Fact]
-    public void Create_VeryLongName_ThrowsArgumentException()
-    {
-        // Arrange
-        const int invalidLength = Role.MaxNameLength + 1;
-        var name = string.Join(string.Empty, _fixture.CreateMany<char>(invalidLength));
 
-        // Act & Assert
-        var ex = Assert.Throws<ArgumentException>(() => Role.Create(name));
-        Assert.StartsWith($"Максимальная длина {Role.MaxNameLength} символов.", ex.Message);
-        Assert.Equal(nameof(name), ex.ParamName);
-    }
-    
-    [Theory]
-    [InlineData("")]
-    [InlineData(" ")]
-    [InlineData("\n")]
-    [InlineData("\r")]
-    [InlineData("\t")]
-    public void Create_EmptyName_ThrowsArgumentException(string name)
-    {
-        // Act & Assert
-        var ex = Assert.Throws<ArgumentException>(() => Role.Create(name));
-        Assert.Equal(nameof(name), ex.ParamName);
+        // Assert
+        role.Should().NotBeNull();
+        role.Id.Should().NotBe(Guid.Empty);
+        role.Name.Should().NotBeNullOrWhiteSpace();
     }
 }

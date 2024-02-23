@@ -1,4 +1,7 @@
-﻿namespace Interviews.Domain.Entities.Requests.Events;
+﻿using Ardalis.GuardClauses;
+using Interviews.Domain.Tools;
+
+namespace Interviews.Domain.Entities.Requests.Events;
 
 public abstract record RequestEvent
 {
@@ -8,15 +11,8 @@ public abstract record RequestEvent
 
     protected RequestEvent(Guid id, DateTime dateTime, Guid requestId)
     {
-        if (id == Guid.Empty)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(id));
-        }
-        
-        if (requestId == Guid.Empty)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(requestId));
-        }
+        Guard.Against.GuidIsEmpty(id);
+        Guard.Against.GuidIsEmpty(requestId);
 
         Id = id;
         DateTime = dateTime;

@@ -1,4 +1,7 @@
-﻿namespace Interviews.Domain.Entities.Requests;
+﻿using Ardalis.GuardClauses;
+using GuardClauses;
+
+namespace Interviews.Domain.Entities.Requests;
 
 public record Document
 {
@@ -11,13 +14,9 @@ public record Document
 
     public Document(string name, DateOnly dateOfBirth, EmailAddress emailAddress)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        ArgumentNullException.ThrowIfNull(emailAddress);
-        
-        if (name.Length > MaxNameLength)
-        {
-            throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));
-        }
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.StringTooLong(name, MaxNameLength);
+        Guard.Against.Null(emailAddress);
 
         if (!IsAgeAcceptable(dateOfBirth))
         {

@@ -1,5 +1,8 @@
-﻿using Interviews.Domain.Entities.Employees;
+﻿using Ardalis.GuardClauses;
+using GuardClauses;
+using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.WorkflowTemplates;
+using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Requests;
 
@@ -17,17 +20,9 @@ public class WorkflowStep
 
     public WorkflowStep(string name, int order, Guid employeeId, Guid roleId, Status status, string? comment = null)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-
-        if (name.Length > MaxNameLength)
-        {
-            throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));
-        }
-
-        if (order < 0)
-        {
-            throw new ArgumentException("Не может быть отрицательным.", nameof(order));
-        }
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.StringTooLong(name, MaxNameLength);
+        Guard.Against.Negative(order);
 
         if (employeeId == Guid.Empty && roleId == Guid.Empty)
         {
@@ -90,10 +85,7 @@ public class WorkflowStep
 
     private void SetStatus(Status status)
     {
-        if (status == Status.None)
-        {
-            throw new ArgumentException("Не может иметь значение по умолчанию.", nameof(status));
-        }
+        Guard.Against.EnumWithDefaultValue(status);
 
         Status = status;
     }
@@ -105,15 +97,8 @@ public class WorkflowStep
             Comment = null;
         }
 
-        if (string.IsNullOrWhiteSpace(comment))
-        {
-            throw new ArgumentException("Не может быть пустой областью.", nameof(comment));
-        }
-        
-        if (comment.Length > MaxCommentLength)
-        {
-            throw new ArgumentException($"Максимальная длина {MaxCommentLength} символов.", nameof(comment));
-        }
+        Guard.Against.NullOrWhiteSpace(comment);
+        Guard.Against.StringTooLong(comment, MaxNameLength);
 
         Comment = comment;
     }

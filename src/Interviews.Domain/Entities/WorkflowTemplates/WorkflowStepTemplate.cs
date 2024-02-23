@@ -1,4 +1,7 @@
-﻿namespace Interviews.Domain.Entities.WorkflowTemplates;
+﻿using Ardalis.GuardClauses;
+using GuardClauses;
+
+namespace Interviews.Domain.Entities.WorkflowTemplates;
 
 public record WorkflowStepTemplate
 {
@@ -11,17 +14,9 @@ public record WorkflowStepTemplate
 
     public WorkflowStepTemplate(string name, int order, Guid employeeId, Guid roleId)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-
-        if (name.Length > MaxNameLength)
-        {
-            throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));
-        }
-
-        if (order < 0)
-        {
-            throw new ArgumentException("Не может быть отрицательным.", nameof(order));
-        }
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.StringTooLong(name, MaxNameLength);
+        Guard.Against.Negative(order);
 
         if (employeeId == Guid.Empty && roleId == Guid.Empty)
         {

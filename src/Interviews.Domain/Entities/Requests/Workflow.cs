@@ -1,5 +1,8 @@
-﻿using Interviews.Domain.Entities.Employees;
+﻿using Ardalis.GuardClauses;
+using GuardClauses;
+using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.WorkflowTemplates;
+using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Requests;
 
@@ -13,28 +16,18 @@ public record Workflow
 
     public Workflow(Guid workflowTemplateId, string name, IEnumerable<WorkflowStep> steps)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        ArgumentNullException.ThrowIfNull(steps);
-        
-        if (workflowTemplateId == Guid.Empty)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(workflowTemplateId));
-        }
-        
-        if (name.Length > MaxNameLength)
-        {
-            throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));
-        }
+        Guard.Against.GuidIsEmpty(workflowTemplateId);
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.StringTooLong(name, MaxNameLength);
 
         WorkflowTemplateId = workflowTemplateId;
         Name = name;
-        Steps = steps.ToList();
+        Steps = steps.ToArray();
     }
 
     public static Workflow Create(WorkflowTemplate workflowTemplate)
     {
-        ArgumentNullException.ThrowIfNull(workflowTemplate);
-        ArgumentNullException.ThrowIfNull(workflowTemplate.Steps);
+        Guard.Against.Null(workflowTemplate);
         
         var workflowTemplateId = workflowTemplate.Id;
         var name = workflowTemplate.Name;

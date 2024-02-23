@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Ardalis.GuardClauses;
 using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.Requests.Events;
+using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Requests;
 
@@ -16,23 +18,16 @@ public class Request
 
     public Request(Guid id, Document document, Workflow workflow, Guid employeeId)
     {
-        ArgumentNullException.ThrowIfNull(document);
-
-        if (id == Guid.Empty)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(id));
-        }
-
-        if (employeeId == Guid.Empty)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(employeeId));
-        }
+        Guard.Against.GuidIsEmpty(id);
+        Guard.Against.Null(document);
+        Guard.Against.Null(workflow);
+        Guard.Against.GuidIsEmpty(employeeId);
 
         Id = id;
         Document = document;
+        SetWorkflow(workflow);
         EmployeeId = employeeId;
         _events = new List<RequestEvent>();
-        SetWorkflow(workflow);
     }
 
     public static Request Create(Document document, Workflow workflow, Guid employeeId)
@@ -75,7 +70,7 @@ public class Request
     [MemberNotNull(nameof(Document))]
     private void SetDocument(Document document)
     {
-        ArgumentNullException.ThrowIfNull(document);
+        Guard.Against.Null(document);
 
         Document = document;
     }
@@ -83,7 +78,7 @@ public class Request
     [MemberNotNull(nameof(Workflow))]
     private void SetWorkflow(Workflow workflow)
     {
-        ArgumentNullException.ThrowIfNull(workflow);
+        Guard.Against.Null(workflow);
 
         Workflow = workflow;
     }

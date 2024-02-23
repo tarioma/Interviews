@@ -1,4 +1,7 @@
-﻿namespace Interviews.Domain.Entities;
+﻿using Ardalis.GuardClauses;
+using GuardClauses;
+
+namespace Interviews.Domain.Entities;
 
 public record EmailAddress
 {
@@ -8,12 +11,10 @@ public record EmailAddress
 
     public EmailAddress(string value)
     {
-        value = value.Trim();
+        Guard.Against.Null(value);
+        Guard.Against.StringTooLong(value, MaxValueLength);
 
-        if (value.Length > MaxValueLength)
-        {
-            throw new ArgumentException($"Максимальная длина {MaxValueLength} символов.", nameof(value));
-        }
+        value = value.Trim();
         
         if (!IsEmail(value))
         {

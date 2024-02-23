@@ -8,7 +8,7 @@ public class EmailAddressCustomization : ICustomization
 {
     public void Customize(IFixture fixture)
     {
-        fixture.Customize<EmailAddress>(
-            composer => composer.FromFactory<MailAddress>(a => new EmailAddress(a.Address)));
+        fixture.Customize<EmailAddress>(composer =>
+            composer.FromFactory<MailAddress>(a => new EmailAddress(a.Address)));
     }
 }

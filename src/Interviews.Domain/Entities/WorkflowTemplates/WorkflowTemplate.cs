@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Ardalis.GuardClauses;
+using GuardClauses;
 using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.Requests;
+using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.WorkflowTemplates;
 
@@ -14,19 +17,16 @@ public class WorkflowTemplate
 
     public WorkflowTemplate(Guid id, string name, IEnumerable<WorkflowStepTemplate> steps)
     {
-        ArgumentNullException.ThrowIfNull(steps);
-        
-        if (id == Guid.Empty)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(id));
-        }
+        Guard.Against.GuidIsEmpty(id);
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.StringTooLong(name, MaxNameLength);
 
         var stepsList = steps.ToList();
         ValidateSteps(stepsList);
 
         Id = id;
-        Steps = stepsList;
         SetName(name);
+        Steps = stepsList;
     }
     
     public static WorkflowTemplate Create(string name, IEnumerable<WorkflowStepTemplate> steps)
@@ -45,24 +45,15 @@ public class WorkflowTemplate
     [MemberNotNull(nameof(Name))]
     private void SetName(string name)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-        
-        if (name.Length > MaxNameLength)
-        {
-            throw new ArgumentException($"Максимальная длина {MaxNameLength} символов.", nameof(name));
-        }
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.StringTooLong(name, MaxNameLength);
         
         Name = name.Trim();
     }
     
     private static void ValidateSteps(List<WorkflowStepTemplate> steps)
     {
-        ArgumentNullException.ThrowIfNull(steps);
-
-        if (steps.Count == 0)
-        {
-            throw new ArgumentException("Не может быть пустым.", nameof(steps));
-        }
+        Guard.Against.NullOrEmpty(steps);
         
         // Являются ли номера шагов уникальной возрастающей порядковой последовательностью от 0 до их количества 
         var isCorrectOrder = steps

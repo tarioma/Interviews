@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Interviews.Domain.Entities;
 using Interviews.Domain.Tests.Tools;
-using Xunit.Abstractions;
 
 namespace Interviews.Domain.Tests.Entities;
 
@@ -10,7 +9,7 @@ public class EmailAddressTests
 {
     private readonly Fixture _fixture;
 
-    public EmailAddressTests(ITestOutputHelper testOutputHelper)
+    public EmailAddressTests()
     {
         _fixture = new Fixture();
         _fixture.Customize(new EmailAddressCustomization());
@@ -23,8 +22,24 @@ public class EmailAddressTests
         var emailAddress = _fixture.Create<EmailAddress>();
         
         // Assert
-        Assert.NotNull(emailAddress.Value);
-        Assert.NotEmpty(emailAddress.Value);
+        emailAddress.Value.Should()
+            .NotBeNullOrWhiteSpace().And
+            .NotBeLowerCased();
+    }
+    
+    [Theory]
+    [InlineData(null!)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Init_NullEmptyOrWhiteSpaceValue_ThrowsArgumentNullException(string value)
+    {
+        // Act
+        var action = () => new EmailAddress(value);
+        
+        // Assert
+        action.Should()
+            .Throw<ArgumentException>()
+            .WithParameterName(nameof(value));
     }
 
     [Fact]
@@ -39,16 +54,14 @@ public class EmailAddressTests
         // Assert
         action.Should()
             .Throw<ArgumentException>()
-            .WithMessage($"Максимальная длина {EmailAddress.MaxValueLength} символов. (Parameter '{nameof(value)}')")
             .WithParameterName(nameof(value));
     }
 
     [Theory]
-    [InlineData("")]
     [InlineData("a")]
     [InlineData("@")]
     [InlineData("a@")]
-    [InlineData("@b")]
+    [InlineData("@a")]
     public void Init_InvalidEmailAddress_ThrowsArgumentException(string value)
     {
         // Act
@@ -57,7 +70,6 @@ public class EmailAddressTests
         // Assert
         action.Should()
             .Throw<ArgumentException>()
-            .WithMessage($"Адрес навалиден. (Parameter '{nameof(value)}')")
             .WithParameterName(nameof(value));
     }
 }
