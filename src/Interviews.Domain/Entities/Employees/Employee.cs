@@ -8,11 +8,6 @@ namespace Interviews.Domain.Entities.Employees;
 public class Employee
 {
     public const int MaxNameLength = 100;
-    
-    public Guid Id { get; private init; }
-    public string Name { get; private set; }
-    public EmailAddress EmailAddress { get; private set; }
-    public Guid RoleId { get; private set; }
 
     public Employee(Guid id, string name, EmailAddress emailAddress, Guid roleId)
     {
@@ -23,6 +18,11 @@ public class Employee
         SetEmailAddress(emailAddress);
         SetRoleId(roleId);
     }
+    
+    public Guid Id { get; }
+    public string Name { get; private set; }
+    public EmailAddress EmailAddress { get; private set; }
+    public Guid RoleId { get; private set; }
     
     public static Employee Create(string name, EmailAddress emailAddress, Guid roleId)
     {

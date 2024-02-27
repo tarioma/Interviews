@@ -2,7 +2,7 @@
 
 public record RequestRestartedEvent : RequestEvent
 {
-    private RequestRestartedEvent(Guid id, DateTime dateTime, Guid requestId) : base(id, dateTime, requestId)
+    public RequestRestartedEvent(Guid id, DateTime dateTime, Guid requestId) : base(id, dateTime, requestId)
     {
     }
 

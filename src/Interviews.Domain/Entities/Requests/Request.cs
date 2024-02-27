@@ -10,12 +10,6 @@ public class Request
 {
     private readonly List<RequestEvent> _events;
 
-    public Guid Id { get; private init; }
-    public Document Document { get; private set; }
-    public Workflow Workflow { get; private set; }
-    public Guid EmployeeId { get; private init; }
-    public IReadOnlyCollection<RequestEvent> Events => _events;
-
     public Request(Guid id, Document document, Workflow workflow, Guid employeeId)
     {
         Guard.Against.GuidIsEmpty(id);
@@ -29,6 +23,12 @@ public class Request
         EmployeeId = employeeId;
         _events = new List<RequestEvent>();
     }
+
+    public Guid Id { get; }
+    public Document Document { get; private set; }
+    public Workflow Workflow { get; private set; }
+    public Guid EmployeeId { get; }
+    public IReadOnlyCollection<RequestEvent> Events => _events;
 
     public static Request Create(Document document, Workflow workflow, Guid employeeId)
     {

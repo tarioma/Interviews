@@ -11,13 +11,6 @@ public class WorkflowStep
     public const int MaxNameLength = 100;
     public const int MaxCommentLength = 500;
 
-    public string Name { get; private init; }
-    public int Order { get; private init; }
-    public Guid EmployeeId { get; private init; }
-    public Guid RoleId { get; private init; }
-    public Status Status { get; private set; }
-    public string? Comment { get; private set; }
-
     public WorkflowStep(string name, int order, Guid employeeId, Guid roleId, Status status, string? comment = null)
     {
         Guard.Against.NullOrWhiteSpace(name);
@@ -41,6 +34,13 @@ public class WorkflowStep
         SetComment(comment);
         SetStatus(status);
     }
+
+    public string Name { get; }
+    public int Order { get; }
+    public Guid EmployeeId { get; }
+    public Guid RoleId { get; }
+    public Status Status { get; private set; }
+    public string? Comment { get; private set; }
 
     public static WorkflowStep Create(WorkflowStepTemplate workflowStepTemplate, string? comment = null)
     {
@@ -98,7 +98,7 @@ public class WorkflowStep
         }
 
         Guard.Against.NullOrWhiteSpace(comment);
-        Guard.Against.StringTooLong(comment, MaxNameLength);
+        Guard.Against.StringTooLong(comment, MaxCommentLength);
 
         Comment = comment;
     }

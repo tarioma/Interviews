@@ -7,10 +7,6 @@ public record Document
 {
     public const int MaxNameLength = 100;
     public const int MinAcceptableAge = 18;
-    
-    public string Name { get; private init; }
-    public DateOnly DateOfBirth { get; private init; }
-    public EmailAddress EmailAddress { get; private init; }
 
     public Document(string name, DateOnly dateOfBirth, EmailAddress emailAddress)
     {
@@ -27,6 +23,10 @@ public record Document
         DateOfBirth = dateOfBirth;
         EmailAddress = emailAddress;
     }
+    
+    public string Name { get; }
+    public DateOnly DateOfBirth { get; }
+    public EmailAddress EmailAddress { get; }
 
     private static bool IsAgeAcceptable(DateOnly dateOfBirth)
     {

@@ -23,7 +23,8 @@ public class EmailAddressTests
         
         // Assert
         emailAddress.Value.Should()
-            .NotBeNullOrWhiteSpace().And
+            .NotBeNullOrWhiteSpace()
+            .And
             .NotBeLowerCased();
     }
     

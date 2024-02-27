@@ -7,11 +7,6 @@ public record WorkflowStepTemplate
 {
     public const int MaxNameLength = 100;
 
-    public string Name { get; private init; }
-    public int Order { get; private init; }
-    public Guid EmployeeId { get; private init; }
-    public Guid RoleId { get; private init; }
-
     public WorkflowStepTemplate(string name, int order, Guid employeeId, Guid roleId)
     {
         Guard.Against.NullOrWhiteSpace(name);
@@ -33,4 +28,9 @@ public record WorkflowStepTemplate
         EmployeeId = employeeId;
         RoleId = roleId;
     }
+
+    public string Name { get; }
+    public int Order { get; }
+    public Guid EmployeeId { get; }
+    public Guid RoleId { get; }
 }

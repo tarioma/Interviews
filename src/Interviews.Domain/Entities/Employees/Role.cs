@@ -8,9 +8,6 @@ namespace Interviews.Domain.Entities.Employees;
 public class Role
 {
     public const int MaxNameLength = 100;
-    
-    public Guid Id { get; private init; }
-    public string Name { get; private set; }
 
     public Role(Guid id, string name)
     {
@@ -19,6 +16,9 @@ public class Role
         Id = id;
         SetName(name);
     }
+    
+    public Guid Id { get; }
+    public string Name { get; private set; }
 
     public static Role Create(string name)
     {

@@ -10,10 +10,6 @@ namespace Interviews.Domain.Entities.WorkflowTemplates;
 public class WorkflowTemplate
 {
     public const int MaxNameLength = 100;
-    
-    public Guid Id { get; private init; }
-    public string Name { get; private set; }
-    public IReadOnlyCollection<WorkflowStepTemplate> Steps { get; private init; }
 
     public WorkflowTemplate(Guid id, string name, IEnumerable<WorkflowStepTemplate> steps)
     {
@@ -28,6 +24,10 @@ public class WorkflowTemplate
         SetName(name);
         Steps = stepsList;
     }
+    
+    public Guid Id { get; }
+    public string Name { get; private set; }
+    public IReadOnlyCollection<WorkflowStepTemplate> Steps { get; }
     
     public static WorkflowTemplate Create(string name, IEnumerable<WorkflowStepTemplate> steps)
     {

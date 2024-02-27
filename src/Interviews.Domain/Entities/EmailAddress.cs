@@ -6,8 +6,6 @@ namespace Interviews.Domain.Entities;
 public record EmailAddress
 {
     public const int MaxValueLength = 100;
-    
-    public string Value { get; private init; }
 
     public EmailAddress(string value)
     {
@@ -23,6 +21,8 @@ public record EmailAddress
 
         Value = value.ToUpperInvariant();
     }
+    
+    public string Value { get; }
 
     private static bool IsEmail(string value) => value.Contains('@') &&
                                                  !value.StartsWith('@') &&

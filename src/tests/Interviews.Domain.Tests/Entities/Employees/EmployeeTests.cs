@@ -25,25 +25,11 @@ public class EmployeeTests
         _roleId = Guid.NewGuid();
     }
 
-    private Employee GenerateEmployee(
-        Guid? id = null,
-        string? name = null,
-        EmailAddress? emailAddress = null,
-        Guid? roleId = null)
-    {
-        id ??= _id;
-        name ??= _name;
-        emailAddress ??= _emailAddress;
-        roleId ??= _roleId;
-        
-        return new Employee((Guid)id, name, emailAddress, (Guid)roleId);
-    }
-
     [Fact]
     public void Init_CorrectParams_SuccessInit()
     {
         // Act
-        var employee = GenerateEmployee();
+        var employee = new Employee(_id, _name, _emailAddress, _roleId);
 
         // Assert
         employee.Id.Should().Be(_id);
@@ -59,7 +45,7 @@ public class EmployeeTests
         var id = Guid.Empty;
         
         // Act
-        var action = () => GenerateEmployee(id: id);
+        var action = () => new Employee(id, _name, _emailAddress, _roleId);
 
         // Assert
         action.Should()
@@ -74,7 +60,7 @@ public class EmployeeTests
     public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
     {
         // Act
-        var action = () => GenerateEmployee(name: name);
+        var action = () => new Employee(_id, name, _emailAddress, _roleId);
 
         // Assert
         action.Should()
@@ -89,7 +75,7 @@ public class EmployeeTests
         var name = _fixture.GenerateString(Employee.MaxNameLength + 1);
 
         // Act
-        var action = () => GenerateEmployee(name: name);
+        var action = () => new Employee(_id, name, _emailAddress, _roleId);
 
         // Assert
         action.Should()
@@ -104,7 +90,7 @@ public class EmployeeTests
         EmailAddress emailAddress = null!;
 
         // Act
-        var action = () => GenerateEmployee(emailAddress: emailAddress);
+        var action = () => new Employee(_id, _name, emailAddress, _roleId);
 
         // Assert
         action.Should()
@@ -119,7 +105,7 @@ public class EmployeeTests
         var roleId = Guid.Empty;
 
         // Act
-        var action = () => GenerateEmployee(roleId: roleId);
+        var action = () => new Employee(_id, _name, _emailAddress, roleId);
 
         // Assert
         action.Should()

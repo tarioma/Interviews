@@ -9,10 +9,6 @@ namespace Interviews.Domain.Entities.Requests;
 public record Workflow
 {
     public const int MaxNameLength = 100;
-    
-    public Guid WorkflowTemplateId { get; private init; }
-    public string Name { get; private init; }
-    public IReadOnlyCollection<WorkflowStep> Steps { get; private init; }
 
     public Workflow(Guid workflowTemplateId, string name, IEnumerable<WorkflowStep> steps)
     {
@@ -24,6 +20,10 @@ public record Workflow
         Name = name;
         Steps = steps.ToArray();
     }
+    
+    public Guid WorkflowTemplateId { get; }
+    public string Name { get; }
+    public IReadOnlyCollection<WorkflowStep> Steps { get; }
 
     public static Workflow Create(WorkflowTemplate workflowTemplate)
     {
