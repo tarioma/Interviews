@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Ardalis.GuardClauses;
-using GuardClauses;
-using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Employees;
 
@@ -11,7 +9,7 @@ public class Role
 
     public Role(Guid id, string name)
     {
-        Guard.Against.GuidIsEmpty(id);
+        Guard.Against.Default(id);
 
         Id = id;
         SetName(name);

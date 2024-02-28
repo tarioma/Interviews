@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Ardalis.GuardClauses;
-using GuardClauses;
 using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.Requests;
-using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.WorkflowTemplates;
 
@@ -13,16 +11,17 @@ public class WorkflowTemplate
 
     public WorkflowTemplate(Guid id, string name, IEnumerable<WorkflowStepTemplate> steps)
     {
-        Guard.Against.GuidIsEmpty(id);
+        Guard.Against.Default(id);
         Guard.Against.NullOrWhiteSpace(name);
         Guard.Against.StringTooLong(name, MaxNameLength);
+        var stepsArray = steps as WorkflowStepTemplate[] ?? steps.ToArray();
+        Guard.Against.Null(stepsArray);
 
-        var stepsList = steps.ToList();
-        ValidateSteps(stepsList);
+        ValidateSteps(stepsArray);
 
         Id = id;
         SetName(name);
-        Steps = stepsList;
+        Steps = stepsArray;
     }
     
     public Guid Id { get; }
@@ -51,7 +50,7 @@ public class WorkflowTemplate
         Name = name.Trim();
     }
     
-    private static void ValidateSteps(List<WorkflowStepTemplate> steps)
+    private static void ValidateSteps(WorkflowStepTemplate[] steps)
     {
         Guard.Against.NullOrEmpty(steps);
         
@@ -59,7 +58,7 @@ public class WorkflowTemplate
         var isCorrectOrder = steps
             .OrderBy(s => s.Order)
             .Select(s => s.Order)
-            .SequenceEqual(Enumerable.Range(0, steps.Count));
+            .SequenceEqual(Enumerable.Range(0, steps.Length));
         
         if (!isCorrectOrder)
         {

@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Interviews.Domain.Entities.Requests.Events;
 
-namespace Interviews.Domain.Tests.Entities.Events;
+namespace Interviews.Domain.Tests.Entities.Requests.Events;
 
 public class RequestApprovedEventTests
 {

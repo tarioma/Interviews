@@ -7,8 +7,8 @@ public class DocumentCustomization : ICustomization
 {
     public void Customize(IFixture fixture)
     {
-        var dateOfBirth = fixture.Create<DateOnly>()
-            .AddYears(-Document.MaxNameLength);
+        var dateOfBirth = DateOnly.FromDateTime(
+            DateTime.UtcNow.AddYears(-Document.MaxNameLength));
         
         fixture.Customize<Document>(composer =>
             composer.With(doc => doc.DateOfBirth, dateOfBirth));

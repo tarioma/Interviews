@@ -2,7 +2,8 @@
 
 public record RequestCreatedEvent : RequestEvent
 {
-    public RequestCreatedEvent(Guid id, DateTime dateTime, Guid requestId) : base(id, dateTime, requestId)
+    public RequestCreatedEvent(Guid id, DateTime dateTime, Guid requestId)
+        : base(id, dateTime, requestId)
     {
     }
 

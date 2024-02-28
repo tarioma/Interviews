@@ -1,8 +1,6 @@
 ﻿using Ardalis.GuardClauses;
-using GuardClauses;
 using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.WorkflowTemplates;
-using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Requests;
 
@@ -31,8 +29,8 @@ public class WorkflowStep
         Order = order;
         EmployeeId = employeeId;
         RoleId = roleId;
-        SetComment(comment);
         SetStatus(status);
+        SetComment(comment);
     }
 
     public string Name { get; }
@@ -85,7 +83,7 @@ public class WorkflowStep
 
     private void SetStatus(Status status)
     {
-        Guard.Against.EnumWithDefaultValue(status);
+        Guard.Against.Default(status);
 
         Status = status;
     }
@@ -95,6 +93,7 @@ public class WorkflowStep
         if (comment is null)
         {
             Comment = null;
+            return;
         }
 
         Guard.Against.NullOrWhiteSpace(comment);

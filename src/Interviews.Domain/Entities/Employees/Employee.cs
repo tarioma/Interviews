@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Ardalis.GuardClauses;
-using GuardClauses;
-using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Employees;
 
@@ -11,7 +9,7 @@ public class Employee
 
     public Employee(Guid id, string name, EmailAddress emailAddress, Guid roleId)
     {
-        Guard.Against.GuidIsEmpty(id);
+        Guard.Against.Default(id);
 
         Id = id;
         SetName(name);
@@ -50,7 +48,7 @@ public class Employee
     
     private void SetRoleId(Guid roleId)
     {
-        Guard.Against.GuidIsEmpty(roleId);
+        Guard.Against.Default(roleId);
         
         RoleId = roleId;
     }

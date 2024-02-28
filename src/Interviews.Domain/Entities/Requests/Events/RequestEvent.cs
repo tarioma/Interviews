@@ -1,5 +1,4 @@
 ﻿using Ardalis.GuardClauses;
-using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Requests.Events;
 
@@ -7,8 +6,9 @@ public abstract record RequestEvent
 {
     protected RequestEvent(Guid id, DateTime dateTime, Guid requestId)
     {
-        Guard.Against.GuidIsEmpty(id);
-        Guard.Against.GuidIsEmpty(requestId);
+        Guard.Against.Default(id);
+        Guard.Against.Default(dateTime);
+        Guard.Against.Default(requestId);
 
         Id = id;
         DateTime = dateTime;

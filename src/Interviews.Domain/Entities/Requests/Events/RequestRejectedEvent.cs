@@ -2,7 +2,8 @@
 
 public record RequestRejectedEvent : RequestEvent
 {
-    public RequestRejectedEvent(Guid id, DateTime dateTime, Guid requestId) : base(id, dateTime, requestId)
+    public RequestRejectedEvent(Guid id, DateTime dateTime, Guid requestId)
+        : base(id, dateTime, requestId)
     {
     }
 

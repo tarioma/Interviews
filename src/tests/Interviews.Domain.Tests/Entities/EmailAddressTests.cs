@@ -12,20 +12,21 @@ public class EmailAddressTests
     public EmailAddressTests()
     {
         _fixture = new Fixture();
-        _fixture.Customize(new EmailAddressCustomization());
     }
 
-    [Fact]
-    public void Init_CorrectEmailAddress_SuccessInit()
+    [Theory]
+    [InlineData("test@example.com")]
+    [InlineData("t@t")]
+    public void Init_CorrectValue_SuccessInit(string value)
     {
+        // Arrange
+        var expectedValue = value.Trim().ToUpperInvariant();
+        
         // Act
-        var emailAddress = _fixture.Create<EmailAddress>();
+        var emailAddress = new EmailAddress(value);
         
         // Assert
-        emailAddress.Value.Should()
-            .NotBeNullOrWhiteSpace()
-            .And
-            .NotBeLowerCased();
+        emailAddress.Value.Should().Be(expectedValue);
     }
     
     [Theory]

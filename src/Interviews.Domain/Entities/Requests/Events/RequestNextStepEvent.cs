@@ -2,7 +2,8 @@
 
 public record RequestNextStepEvent : RequestEvent
 {
-    public RequestNextStepEvent(Guid id, DateTime dateTime, Guid requestId) : base(id, dateTime, requestId)
+    public RequestNextStepEvent(Guid id, DateTime dateTime, Guid requestId)
+        : base(id, dateTime, requestId)
     {
     }
 

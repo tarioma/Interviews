@@ -1,5 +1,4 @@
 ﻿using Ardalis.GuardClauses;
-using GuardClauses;
 
 namespace Interviews.Domain.Entities.Requests;
 
@@ -12,11 +11,13 @@ public record Document
     {
         Guard.Against.NullOrWhiteSpace(name);
         Guard.Against.StringTooLong(name, MaxNameLength);
+        Guard.Against.Default(dateOfBirth);
         Guard.Against.Null(emailAddress);
 
         if (!IsAgeAcceptable(dateOfBirth))
         {
-            throw new ArgumentException($"Минимальный допустимый возраст {MinAcceptableAge} лет.", nameof(name));
+            throw new ArgumentException($"Минимальный допустимый возраст {MinAcceptableAge} лет.",
+                nameof(dateOfBirth));
         }
 
         Name = name.Trim();

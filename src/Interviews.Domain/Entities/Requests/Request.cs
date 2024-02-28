@@ -2,31 +2,29 @@
 using Ardalis.GuardClauses;
 using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.Requests.Events;
-using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Requests;
 
-public class Request
+public record Request
 {
     private readonly List<RequestEvent> _events;
 
     public Request(Guid id, Document document, Workflow workflow, Guid employeeId)
     {
-        Guard.Against.GuidIsEmpty(id);
-        Guard.Against.Null(document);
+        Guard.Against.Default(id);
         Guard.Against.Null(workflow);
-        Guard.Against.GuidIsEmpty(employeeId);
+        Guard.Against.Default(employeeId);
 
         Id = id;
-        Document = document;
-        SetWorkflow(workflow);
+        SetDocument(document);
+        Workflow = workflow;
         EmployeeId = employeeId;
         _events = new List<RequestEvent>();
     }
 
     public Guid Id { get; }
     public Document Document { get; private set; }
-    public Workflow Workflow { get; private set; }
+    public Workflow Workflow { get; }
     public Guid EmployeeId { get; }
     public IReadOnlyCollection<RequestEvent> Events => _events;
 
@@ -73,13 +71,5 @@ public class Request
         Guard.Against.Null(document);
 
         Document = document;
-    }
-
-    [MemberNotNull(nameof(Workflow))]
-    private void SetWorkflow(Workflow workflow)
-    {
-        Guard.Against.Null(workflow);
-
-        Workflow = workflow;
     }
 }

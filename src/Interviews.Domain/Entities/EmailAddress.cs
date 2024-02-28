@@ -1,5 +1,4 @@
 ﻿using Ardalis.GuardClauses;
-using GuardClauses;
 
 namespace Interviews.Domain.Entities;
 
@@ -9,7 +8,7 @@ public record EmailAddress
 
     public EmailAddress(string value)
     {
-        Guard.Against.Null(value);
+        Guard.Against.NullOrWhiteSpace(value);
         Guard.Against.StringTooLong(value, MaxValueLength);
 
         value = value.Trim();

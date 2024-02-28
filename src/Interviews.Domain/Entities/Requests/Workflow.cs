@@ -1,8 +1,6 @@
 ﻿using Ardalis.GuardClauses;
-using GuardClauses;
 using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.WorkflowTemplates;
-using Interviews.Domain.Tools;
 
 namespace Interviews.Domain.Entities.Requests;
 
@@ -12,13 +10,15 @@ public record Workflow
 
     public Workflow(Guid workflowTemplateId, string name, IEnumerable<WorkflowStep> steps)
     {
-        Guard.Against.GuidIsEmpty(workflowTemplateId);
+        Guard.Against.Default(workflowTemplateId);
         Guard.Against.NullOrWhiteSpace(name);
         Guard.Against.StringTooLong(name, MaxNameLength);
+        var stepsArray = steps as WorkflowStep[] ?? steps.ToArray();
+        Guard.Against.Null(stepsArray);
 
         WorkflowTemplateId = workflowTemplateId;
         Name = name;
-        Steps = steps.ToArray();
+        Steps = stepsArray;
     }
     
     public Guid WorkflowTemplateId { get; }
