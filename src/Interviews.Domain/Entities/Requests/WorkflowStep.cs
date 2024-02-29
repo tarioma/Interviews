@@ -22,7 +22,7 @@ public class WorkflowStep
 
         if (employeeId != Guid.Empty && roleId != Guid.Empty)
         {
-            throw new ArgumentException($"Можно назначить только {nameof(employeeId)} или {nameof(roleId)}.");
+            roleId = Guid.Empty;
         }
 
         Name = name;

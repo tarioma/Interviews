@@ -7,12 +7,7 @@ namespace Interviews.Domain.Tests.Entities;
 
 public class EmailAddressTests
 {
-    private readonly Fixture _fixture;
-
-    public EmailAddressTests()
-    {
-        _fixture = new Fixture();
-    }
+    private readonly Fixture _fixture = new();
 
     [Theory]
     [InlineData("test@example.com")]

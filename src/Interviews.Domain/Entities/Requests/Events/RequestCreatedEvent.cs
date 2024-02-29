@@ -1,5 +1,8 @@
-﻿namespace Interviews.Domain.Entities.Requests.Events;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace Interviews.Domain.Entities.Requests.Events;
+
+[ExcludeFromCodeCoverage]
 public record RequestCreatedEvent : RequestEvent
 {
     public RequestCreatedEvent(Guid id, DateTime dateTime, Guid requestId)

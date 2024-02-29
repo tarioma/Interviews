@@ -13,6 +13,7 @@ public record Workflow
         Guard.Against.Default(workflowTemplateId);
         Guard.Against.NullOrWhiteSpace(name);
         Guard.Against.StringTooLong(name, MaxNameLength);
+        
         var stepsArray = steps as WorkflowStep[] ?? steps.ToArray();
         Guard.Against.Null(stepsArray);
 
@@ -83,7 +84,7 @@ public record Workflow
 
         if (activeStep is null)
         {
-            throw new Exception("Нет шага со статусом ожидания.");
+            throw new AggregateException("Нет шага со статусом ожидания.");
         }
         
         return activeStep;

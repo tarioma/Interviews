@@ -9,33 +9,30 @@ namespace Interviews.Domain.Tests.Entities.Employees;
 public class EmployeeTests
 {
     private readonly Fixture _fixture;
-    private readonly Guid _id;
-    private readonly string _name;
-    private readonly EmailAddress _emailAddress;
-    private readonly Guid _roleId;
 
     public EmployeeTests()
     {
         _fixture = new Fixture();
         _fixture.Customize(new EmailAddressCustomization());
-
-        _id = Guid.NewGuid();
-        _name = _fixture.GenerateString(Employee.MaxNameLength);
-        _emailAddress = _fixture.Create<EmailAddress>();
-        _roleId = Guid.NewGuid();
     }
 
     [Fact]
     public void Init_CorrectParams_SuccessInit()
     {
+        // Arrange
+        var id = _fixture.Create<Guid>();
+        var name = _fixture.GenerateString(Employee.MaxNameLength);
+        var emailAddress = _fixture.Create<EmailAddress>();
+        var roleId = _fixture.Create<Guid>();
+        
         // Act
-        var employee = new Employee(_id, _name, _emailAddress, _roleId);
+        var employee = new Employee(id, name, emailAddress, roleId);
 
         // Assert
-        employee.Id.Should().Be(_id);
-        employee.Name.Should().Be(_name);
-        employee.EmailAddress.Should().Be(_emailAddress);
-        employee.RoleId.Should().Be(_roleId);
+        employee.Id.Should().Be(id);
+        employee.Name.Should().Be(name);
+        employee.EmailAddress.Should().Be(emailAddress);
+        employee.RoleId.Should().Be(roleId);
     }
 
     [Fact]
@@ -43,9 +40,12 @@ public class EmployeeTests
     {
         // Arrange
         var id = Guid.Empty;
+        var name = _fixture.GenerateString(Employee.MaxNameLength);
+        var emailAddress = _fixture.Create<EmailAddress>();
+        var roleId = _fixture.Create<Guid>();
         
         // Act
-        var action = () => new Employee(id, _name, _emailAddress, _roleId);
+        var action = () => new Employee(id, name, emailAddress, roleId);
 
         // Assert
         action.Should()
@@ -59,8 +59,13 @@ public class EmployeeTests
     [InlineData(" ")]
     public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
     {
+        // Arrange
+        var id = _fixture.Create<Guid>();
+        var emailAddress = _fixture.Create<EmailAddress>();
+        var roleId = _fixture.Create<Guid>();
+        
         // Act
-        var action = () => new Employee(_id, name, _emailAddress, _roleId);
+        var action = () => new Employee(id, name, emailAddress, roleId);
 
         // Assert
         action.Should()
@@ -72,10 +77,13 @@ public class EmployeeTests
     public void Init_VeryLongName_ThrowsArgumentException()
     {
         // Arrange
+        var id = _fixture.Create<Guid>();
         var name = _fixture.GenerateString(Employee.MaxNameLength + 1);
+        var emailAddress = _fixture.Create<EmailAddress>();
+        var roleId = _fixture.Create<Guid>();
 
         // Act
-        var action = () => new Employee(_id, name, _emailAddress, _roleId);
+        var action = () => new Employee(id, name, emailAddress, roleId);
 
         // Assert
         action.Should()
@@ -87,10 +95,13 @@ public class EmployeeTests
     public void Init_NullEmailAddress_ThrowsArgumentNullException()
     {
         // Arrange
+        var id = _fixture.Create<Guid>();
+        var name = _fixture.GenerateString(Employee.MaxNameLength);
         EmailAddress emailAddress = null!;
-
+        var roleId = _fixture.Create<Guid>();
+        
         // Act
-        var action = () => new Employee(_id, _name, emailAddress, _roleId);
+        var action = () => new Employee(id, name, emailAddress, roleId);
 
         // Assert
         action.Should()
@@ -102,10 +113,13 @@ public class EmployeeTests
     public void Init_EmptyGuidRoleId_ThrowsArgumentException()
     {
         // Arrange
+        var id = _fixture.Create<Guid>();
+        var name = _fixture.GenerateString(Employee.MaxNameLength);
+        var emailAddress = _fixture.Create<EmailAddress>();
         var roleId = Guid.Empty;
 
         // Act
-        var action = () => new Employee(_id, _name, _emailAddress, roleId);
+        var action = () => new Employee(id, name, emailAddress, roleId);
 
         // Assert
         action.Should()
@@ -116,13 +130,18 @@ public class EmployeeTests
     [Fact]
     public void Create_CorrectParams_SuccessCreateAndReturn()
     {
+        // Arrange
+        var name = _fixture.GenerateString(Employee.MaxNameLength);
+        var emailAddress = _fixture.Create<EmailAddress>();
+        var roleId = _fixture.Create<Guid>();
+        
         // Act
-        var employee = Employee.Create(_name, _emailAddress, _roleId);
+        var employee = Employee.Create(name, emailAddress, roleId);
 
         // Assert
-        employee.Id.Should().NotBe(Guid.Empty);
-        employee.Name.Should().Be(_name);
-        employee.EmailAddress.Should().Be(_emailAddress);
-        employee.RoleId.Should().Be(_roleId);
+        employee.Id.Should().NotBeEmpty();
+        employee.Name.Should().Be(name);
+        employee.EmailAddress.Should().Be(emailAddress);
+        employee.RoleId.Should().Be(roleId);
     }
 }

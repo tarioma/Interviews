@@ -7,26 +7,21 @@ namespace Interviews.Domain.Tests.Entities.Employees;
 
 public class RoleTests
 {
-    private readonly Fixture _fixture;
-    private readonly Guid _id;
-    private readonly string _name;
-
-    public RoleTests()
-    {
-        _fixture = new Fixture();
-        _id = Guid.NewGuid();
-        _name = _fixture.GenerateString(Role.MaxNameLength);
-    }
+    private readonly Fixture _fixture = new();
 
     [Fact]
     public void Init_CorrectParams_SuccessInit()
     {
+        // Arrange
+        var id = _fixture.Create<Guid>();
+        var name = _fixture.GenerateString(Role.MaxNameLength);
+        
         // Act
-        var role = new Role(_id, _name);
+        var role = new Role(id, name);
         
         // Assert
-        role.Id.Should().Be(_id);
-        role.Name.Should().Be(_name);
+        role.Id.Should().Be(id);
+        role.Name.Should().Be(name);
     }
     
     [Fact]
@@ -34,9 +29,10 @@ public class RoleTests
     {
         // Arrange
         var id = Guid.Empty;
+        var name = _fixture.GenerateString(Role.MaxNameLength);
         
         // Act
-        var action = () => new Role(id, _name);
+        var action = () => new Role(id, name);
         
         // Assert
         action.Should()
@@ -50,8 +46,11 @@ public class RoleTests
     [InlineData(" ")]
     public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
     {
+        // Arrange
+        var id = _fixture.Create<Guid>();
+        
         // Act
-        var action = () => new Role(_id, name);
+        var action = () => new Role(id, name);
         
         // Assert
         action.Should()
@@ -63,10 +62,11 @@ public class RoleTests
     public void Init_VeryLongName_ThrowsArgumentException()
     {
         // Arrange
+        var id = _fixture.Create<Guid>();
         var name = _fixture.GenerateString(Role.MaxNameLength + 1);
 
         // Act
-        var action = () => new Role(_id, name);
+        var action = () => new Role(id, name);
         
         // Assert
         action.Should()
@@ -77,11 +77,14 @@ public class RoleTests
     [Fact]
     public void Create_CorrectParams_SuccessCreateAndReturn()
     {
+        // Arrange
+        var name = _fixture.GenerateString(Role.MaxNameLength);
+        
         // Act
-        var role = Role.Create(_name);
+        var role = Role.Create(name);
 
         // Assert
-        role.Id.Should().NotBe(Guid.Empty);
-        role.Name.Should().Be(_name);
+        role.Id.Should().NotBeEmpty();
+        role.Name.Should().Be(name);
     }
 }
