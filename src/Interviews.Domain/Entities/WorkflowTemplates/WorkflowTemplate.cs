@@ -15,6 +15,7 @@ public class WorkflowTemplate
         Guard.Against.NullOrWhiteSpace(name);
         Guard.Against.StringTooLong(name, MaxNameLength);
         Guard.Against.NullOrEmpty(steps);
+
         ValidateSteps(steps);
 
         Id = id;
@@ -36,6 +37,7 @@ public class WorkflowTemplate
     public Request CreateRequest(Employee employee, Document document)
     {
         var workflow = Workflow.Create(this);
+
         return Request.Create(document, workflow, employee.Id);
     }
 

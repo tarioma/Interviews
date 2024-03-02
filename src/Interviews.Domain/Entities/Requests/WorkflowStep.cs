@@ -53,6 +53,8 @@ public class WorkflowStep
 
     internal void Approve(Employee employee, string? comment = null)
     {
+        Guard.Against.Null(employee);
+
         VerifyRights(employee);
 
         SetStatus(Status.Approved);
@@ -61,6 +63,8 @@ public class WorkflowStep
 
     internal void Reject(Employee employee, string? comment = null)
     {
+        Guard.Against.Null(employee);
+
         VerifyRights(employee);
 
         SetStatus(Status.Rejected);
