@@ -2,7 +2,7 @@
 
 namespace Interviews.Domain.Entities.Requests.Events;
 
-public abstract record RequestEvent
+public abstract class RequestEvent
 {
     protected RequestEvent(Guid id, DateTime dateTime, Guid requestId)
     {
@@ -14,7 +14,7 @@ public abstract record RequestEvent
         DateTime = dateTime;
         RequestId = requestId;
     }
-    
+
     public Guid Id { get; }
     public DateTime DateTime { get; }
     public Guid RequestId { get; }

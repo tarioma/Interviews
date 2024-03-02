@@ -2,9 +2,9 @@
 
 namespace Interviews.Domain.Entities;
 
-public record EmailAddress
+public class EmailAddress
 {
-    public const int MaxValueLength = 100;
+    internal const int MaxValueLength = 100;
 
     public EmailAddress(string value)
     {
@@ -12,7 +12,7 @@ public record EmailAddress
         Guard.Against.StringTooLong(value, MaxValueLength);
 
         value = value.Trim();
-        
+
         if (!IsEmail(value))
         {
             throw new ArgumentException("Адрес навалиден.", nameof(value));
@@ -20,7 +20,7 @@ public record EmailAddress
 
         Value = value.ToUpperInvariant();
     }
-    
+
     public string Value { get; }
 
     private static bool IsEmail(string value) => value.Contains('@') &&

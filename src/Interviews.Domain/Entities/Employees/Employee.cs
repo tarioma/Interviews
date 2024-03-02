@@ -5,7 +5,7 @@ namespace Interviews.Domain.Entities.Employees;
 
 public class Employee
 {
-    public const int MaxNameLength = 100;
+    internal const int MaxNameLength = 100;
 
     public Employee(Guid id, string name, EmailAddress emailAddress, Guid roleId)
     {
@@ -16,16 +16,16 @@ public class Employee
         SetEmailAddress(emailAddress);
         SetRoleId(roleId);
     }
-    
+
     public Guid Id { get; }
     public string Name { get; private set; }
     public EmailAddress EmailAddress { get; private set; }
     public Guid RoleId { get; private set; }
-    
+
     public static Employee Create(string name, EmailAddress emailAddress, Guid roleId)
     {
         var id = Guid.NewGuid();
-        
+
         return new Employee(id, name, emailAddress, roleId);
     }
 
@@ -34,22 +34,22 @@ public class Employee
     {
         Guard.Against.NullOrWhiteSpace(name);
         Guard.Against.StringTooLong(name, MaxNameLength);
-        
+
         Name = name.Trim();
     }
-    
+
     [MemberNotNull(nameof(EmailAddress))]
     private void SetEmailAddress(EmailAddress emailAddress)
     {
         Guard.Against.Null(emailAddress);
-        
+
         EmailAddress = emailAddress;
     }
-    
+
     private void SetRoleId(Guid roleId)
     {
         Guard.Against.Default(roleId);
-        
+
         RoleId = roleId;
     }
 }

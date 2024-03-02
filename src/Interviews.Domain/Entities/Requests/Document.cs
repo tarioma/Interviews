@@ -2,10 +2,10 @@
 
 namespace Interviews.Domain.Entities.Requests;
 
-public record Document
+public class Document
 {
-    public const int MaxNameLength = 100;
-    public const int MinAcceptableAge = 18;
+    internal const int MaxNameLength = 100;
+    internal const int MinAcceptableAge = 18;
 
     public Document(string name, DateOnly dateOfBirth, EmailAddress emailAddress)
     {
@@ -24,7 +24,7 @@ public record Document
         DateOfBirth = dateOfBirth;
         EmailAddress = emailAddress;
     }
-    
+
     public string Name { get; }
     public DateOnly DateOfBirth { get; }
     public EmailAddress EmailAddress { get; }

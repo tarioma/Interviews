@@ -1,9 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace Interviews.Domain.Entities.Requests.Events;
 
-namespace Interviews.Domain.Entities.Requests.Events;
-
-[ExcludeFromCodeCoverage]
-public record RequestRestartedEvent : RequestEvent
+public class RequestRestartedEvent : RequestEvent
 {
     public RequestRestartedEvent(Guid id, DateTime dateTime, Guid requestId)
         : base(id, dateTime, requestId)

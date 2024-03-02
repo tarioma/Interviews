@@ -6,8 +6,8 @@ namespace Interviews.Domain.Entities.Requests;
 
 public class WorkflowStep
 {
-    public const int MaxNameLength = 100;
-    public const int MaxCommentLength = 500;
+    internal const int MaxNameLength = 100;
+    internal const int MaxCommentLength = 500;
 
     public WorkflowStep(string name, int order, Guid employeeId, Guid roleId, Status status, string? comment = null)
     {
@@ -22,7 +22,7 @@ public class WorkflowStep
 
         if (employeeId != Guid.Empty && roleId != Guid.Empty)
         {
-            roleId = Guid.Empty;
+            throw new ArgumentException($"Можно назначить только {nameof(employeeId)} или {nameof(roleId)}.");
         }
 
         Name = name;
@@ -54,15 +54,15 @@ public class WorkflowStep
     internal void Approve(Employee employee, string? comment = null)
     {
         VerifyRights(employee);
-        
+
         SetStatus(Status.Approved);
         SetComment(comment);
     }
-    
+
     internal void Reject(Employee employee, string? comment = null)
     {
         VerifyRights(employee);
-        
+
         SetStatus(Status.Rejected);
         SetComment(comment);
     }

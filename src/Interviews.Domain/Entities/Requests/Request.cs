@@ -5,7 +5,7 @@ using Interviews.Domain.Entities.Requests.Events;
 
 namespace Interviews.Domain.Entities.Requests;
 
-public record Request
+public class Request
 {
     private readonly List<RequestEvent> _events;
 

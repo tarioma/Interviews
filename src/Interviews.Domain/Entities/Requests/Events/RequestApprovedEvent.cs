@@ -1,6 +1,6 @@
 ﻿namespace Interviews.Domain.Entities.Requests.Events;
 
-public record RequestApprovedEvent : RequestEvent
+public class RequestApprovedEvent : RequestEvent
 {
     public RequestApprovedEvent(Guid id, DateTime dateTime, Guid requestId)
         : base(id, dateTime, requestId)

@@ -2,9 +2,9 @@
 
 namespace Interviews.Domain.Entities.WorkflowTemplates;
 
-public record WorkflowStepTemplate
+public class WorkflowStepTemplate
 {
-    public const int MaxNameLength = 100;
+    internal const int MaxNameLength = 100;
 
     public WorkflowStepTemplate(string name, int order, Guid employeeId, Guid roleId)
     {
