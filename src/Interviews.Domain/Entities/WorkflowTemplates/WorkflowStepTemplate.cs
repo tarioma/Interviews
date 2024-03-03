@@ -6,18 +6,21 @@ public class WorkflowStepTemplate
 {
     internal const int MaxNameLength = 100;
 
-    public WorkflowStepTemplate(string name, int order, Guid employeeId, Guid roleId)
+    public WorkflowStepTemplate(string name, int order, Guid? employeeId = null, Guid? roleId = null)
     {
         Guard.Against.NullOrWhiteSpace(name);
         Guard.Against.StringTooLong(name, MaxNameLength);
         Guard.Against.Negative(order);
 
-        if (employeeId == Guid.Empty && roleId == Guid.Empty)
+        var employeeIdIsDefined = employeeId is null || employeeId == Guid.Empty;
+        var roleIdIsDefined = roleId is null || roleId == Guid.Empty;
+
+        if (!(employeeIdIsDefined || roleIdIsDefined))
         {
-            throw new ArgumentException($"{nameof(employeeId)} и {nameof(roleId)} не могут одновременно быть пустыми.");
+            throw new ArgumentException($"Один из параметров {nameof(employeeId)} или {nameof(roleId)} обязательный.");
         }
 
-        if (employeeId != Guid.Empty && roleId != Guid.Empty)
+        if (employeeIdIsDefined && roleIdIsDefined)
         {
             throw new ArgumentException($"Можно назначить только {nameof(employeeId)} или {nameof(roleId)}.");
         }
@@ -30,6 +33,6 @@ public class WorkflowStepTemplate
 
     public string Name { get; }
     public int Order { get; }
-    public Guid EmployeeId { get; }
-    public Guid RoleId { get; }
+    public Guid? EmployeeId { get; }
+    public Guid? RoleId { get; }
 }

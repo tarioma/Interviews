@@ -15,31 +15,31 @@ public class RoleTests
         // Arrange
         var id = _fixture.Create<Guid>();
         var name = _fixture.GenerateString(Role.MaxNameLength);
-        
+
         // Act
         var role = new Role(id, name);
-        
+
         // Assert
         role.Id.Should().Be(id);
         role.Name.Should().Be(name);
     }
-    
+
     [Fact]
     public void Init_EmptyGuidId_ThrowsArgumentNullException()
     {
         // Arrange
         var id = Guid.Empty;
         var name = _fixture.GenerateString(Role.MaxNameLength);
-        
+
         // Act
         var action = () => new Role(id, name);
-        
+
         // Assert
         action.Should()
             .Throw<ArgumentException>()
             .WithParameterName(nameof(id));
     }
-    
+
     [Theory]
     [InlineData(null!)]
     [InlineData("")]
@@ -48,16 +48,16 @@ public class RoleTests
     {
         // Arrange
         var id = _fixture.Create<Guid>();
-        
+
         // Act
         var action = () => new Role(id, name);
-        
+
         // Assert
         action.Should()
             .Throw<ArgumentException>()
             .WithParameterName(nameof(name));
     }
-    
+
     [Fact]
     public void Init_VeryLongName_ThrowsArgumentException()
     {
@@ -67,19 +67,19 @@ public class RoleTests
 
         // Act
         var action = () => new Role(id, name);
-        
+
         // Assert
         action.Should()
             .Throw<ArgumentException>()
             .WithParameterName(nameof(name));
     }
-    
+
     [Fact]
     public void Create_CorrectParams_SuccessCreateAndReturn()
     {
         // Arrange
         var name = _fixture.GenerateString(Role.MaxNameLength);
-        
+
         // Act
         var role = Role.Create(name);
 

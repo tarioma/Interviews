@@ -24,7 +24,7 @@ public class EmployeeTests
         var name = _fixture.GenerateString(Employee.MaxNameLength);
         var emailAddress = _fixture.Create<EmailAddress>();
         var roleId = _fixture.Create<Guid>();
-        
+
         // Act
         var employee = new Employee(id, name, emailAddress, roleId);
 
@@ -43,7 +43,7 @@ public class EmployeeTests
         var name = _fixture.GenerateString(Employee.MaxNameLength);
         var emailAddress = _fixture.Create<EmailAddress>();
         var roleId = _fixture.Create<Guid>();
-        
+
         // Act
         var action = () => new Employee(id, name, emailAddress, roleId);
 
@@ -63,7 +63,7 @@ public class EmployeeTests
         var id = _fixture.Create<Guid>();
         var emailAddress = _fixture.Create<EmailAddress>();
         var roleId = _fixture.Create<Guid>();
-        
+
         // Act
         var action = () => new Employee(id, name, emailAddress, roleId);
 
@@ -90,7 +90,7 @@ public class EmployeeTests
             .Throw<ArgumentException>()
             .WithParameterName(nameof(name));
     }
-    
+
     [Fact]
     public void Init_NullEmailAddress_ThrowsArgumentNullException()
     {
@@ -99,7 +99,7 @@ public class EmployeeTests
         var name = _fixture.GenerateString(Employee.MaxNameLength);
         EmailAddress emailAddress = null!;
         var roleId = _fixture.Create<Guid>();
-        
+
         // Act
         var action = () => new Employee(id, name, emailAddress, roleId);
 
@@ -134,7 +134,7 @@ public class EmployeeTests
         var name = _fixture.GenerateString(Employee.MaxNameLength);
         var emailAddress = _fixture.Create<EmailAddress>();
         var roleId = _fixture.Create<Guid>();
-        
+
         // Act
         var employee = Employee.Create(name, emailAddress, roleId);
 

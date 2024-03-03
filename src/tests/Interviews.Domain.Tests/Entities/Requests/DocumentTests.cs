@@ -16,24 +16,24 @@ public class DocumentTests
         _fixture = new Fixture();
         _fixture.Customize(new EmailAddressCustomization());
     }
-    
+
     [Fact]
     public void Init_CorrectParams_SuccessInit()
     {
         // Arrange
         var name = _fixture.GenerateString(Employee.MaxNameLength);
-        var dateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-Document.MinAcceptableAge));
+        var dateOfBirth = _fixture.GenerateDateOfBirth(Document.MinAcceptableAge);
         var emailAddress = _fixture.Create<EmailAddress>();
-        
+
         // Act
         var document = new Document(name, dateOfBirth, emailAddress);
-        
+
         // Assert
         document.Name.Should().Be(name);
         document.DateOfBirth.Should().Be(dateOfBirth);
         document.EmailAddress.Should().Be(emailAddress);
     }
-    
+
     [Theory]
     [InlineData(null!)]
     [InlineData("")]
@@ -41,9 +41,9 @@ public class DocumentTests
     public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
     {
         // Arrange
-        var dateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-Document.MinAcceptableAge));
+        var dateOfBirth = _fixture.GenerateDateOfBirth(Document.MinAcceptableAge);
         var emailAddress = _fixture.Create<EmailAddress>();
-        
+
         // Act
         var action = () => new Document(name, dateOfBirth, emailAddress);
 
@@ -58,7 +58,7 @@ public class DocumentTests
     {
         // Arrange
         var name = _fixture.GenerateString(Document.MaxNameLength + 1);
-        var dateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-Document.MinAcceptableAge));
+        var dateOfBirth = _fixture.GenerateDateOfBirth(Document.MinAcceptableAge);
         var emailAddress = _fixture.Create<EmailAddress>();
 
         // Act
@@ -69,7 +69,7 @@ public class DocumentTests
             .Throw<ArgumentException>()
             .WithParameterName(nameof(name));
     }
-    
+
     [Fact]
     public void Init_DefaultDateOfBirth_ThrowsArgumentException()
     {
@@ -86,13 +86,13 @@ public class DocumentTests
             .Throw<ArgumentException>()
             .WithParameterName(nameof(dateOfBirth));
     }
-    
+
     [Fact]
     public void Init_DateOfBirthIsTooLate_ThrowsArgumentException()
     {
         // Arrange
         var name = _fixture.GenerateString(Employee.MaxNameLength);
-        var dateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-Document.MinAcceptableAge + 1));
+        var dateOfBirth = _fixture.GenerateDateOfBirth(Document.MinAcceptableAge - 1);
         var emailAddress = _fixture.Create<EmailAddress>();
 
         // Act
@@ -103,13 +103,13 @@ public class DocumentTests
             .Throw<ArgumentException>()
             .WithParameterName(nameof(dateOfBirth));
     }
-    
+
     [Fact]
     public void Init_NullEmailAddress_ThrowsArgumentNullException()
     {
         // Arrange
         var name = _fixture.GenerateString(Employee.MaxNameLength);
-        var dateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-Document.MinAcceptableAge));
+        var dateOfBirth = _fixture.GenerateDateOfBirth(Document.MinAcceptableAge);
         EmailAddress emailAddress = null!;
 
         // Act

@@ -9,18 +9,27 @@ public class WorkflowStep
     internal const int MaxNameLength = 100;
     internal const int MaxCommentLength = 500;
 
-    public WorkflowStep(string name, int order, Guid employeeId, Guid roleId, Status status, string? comment = null)
+    public WorkflowStep(
+        string name,
+        int order,
+        Status status,
+        Guid? employeeId = null,
+        Guid? roleId = null,
+        string? comment = null)
     {
         Guard.Against.NullOrWhiteSpace(name);
         Guard.Against.StringTooLong(name, MaxNameLength);
         Guard.Against.Negative(order);
 
-        if (employeeId == Guid.Empty && roleId == Guid.Empty)
+        var employeeIdIsDefined = employeeId is null || employeeId == Guid.Empty;
+        var roleIdIsDefined = roleId is null || roleId == Guid.Empty;
+
+        if (!(employeeIdIsDefined || roleIdIsDefined))
         {
-            throw new ArgumentException($"{nameof(employeeId)} и {nameof(roleId)} не могут одновременно быть пустыми.");
+            throw new ArgumentException($"Один из параметров {nameof(employeeId)} или {nameof(roleId)} обязательный.");
         }
 
-        if (employeeId != Guid.Empty && roleId != Guid.Empty)
+        if (employeeIdIsDefined && roleIdIsDefined)
         {
             throw new ArgumentException($"Можно назначить только {nameof(employeeId)} или {nameof(roleId)}.");
         }
@@ -35,20 +44,22 @@ public class WorkflowStep
 
     public string Name { get; }
     public int Order { get; }
-    public Guid EmployeeId { get; }
-    public Guid RoleId { get; }
     public Status Status { get; private set; }
+    public Guid? EmployeeId { get; }
+    public Guid? RoleId { get; }
     public string? Comment { get; private set; }
 
     public static WorkflowStep Create(WorkflowStepTemplate workflowStepTemplate, string? comment = null)
     {
+        Guard.Against.Null(workflowStepTemplate);
+
         var name = workflowStepTemplate.Name;
         var order = workflowStepTemplate.Order;
         var employeeId = workflowStepTemplate.EmployeeId;
         var roleId = workflowStepTemplate.RoleId;
         var status = Status.Pending;
 
-        return new WorkflowStep(name, order, employeeId, roleId, status, comment);
+        return new WorkflowStep(name, order, status, employeeId, roleId, comment);
     }
 
     internal void Approve(Employee employee, string? comment = null)

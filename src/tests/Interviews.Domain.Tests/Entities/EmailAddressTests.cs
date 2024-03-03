@@ -16,14 +16,14 @@ public class EmailAddressTests
     {
         // Arrange
         var expectedValue = value.Trim().ToUpperInvariant();
-        
+
         // Act
         var emailAddress = new EmailAddress(value);
-        
+
         // Assert
         emailAddress.Value.Should().Be(expectedValue);
     }
-    
+
     [Theory]
     [InlineData(null!)]
     [InlineData("")]
@@ -32,7 +32,7 @@ public class EmailAddressTests
     {
         // Act
         var action = () => new EmailAddress(value);
-        
+
         // Assert
         action.Should()
             .Throw<ArgumentException>()
@@ -44,10 +44,10 @@ public class EmailAddressTests
     {
         // Arrange
         var value = _fixture.GenerateString(EmailAddress.MaxValueLength + 1);
-        
+
         // Act
         var action = () => new EmailAddress(value);
-        
+
         // Assert
         action.Should()
             .Throw<ArgumentException>()
@@ -63,7 +63,7 @@ public class EmailAddressTests
     {
         // Act
         var action = () => new EmailAddress(value);
-        
+
         // Assert
         action.Should()
             .Throw<ArgumentException>()

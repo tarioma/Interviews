@@ -15,10 +15,10 @@ public class RequestApprovedEventTests
         var id = _fixture.Create<Guid>();
         var dateTime = _fixture.Create<DateTime>();
         var requestId = _fixture.Create<Guid>();
-        
+
         // Act
         var requestApprovedEvent = new RequestApprovedEvent(id, dateTime, requestId);
-        
+
         // Assert
         requestApprovedEvent.Id.Should().Be(id);
         requestApprovedEvent.DateTime.Should().Be(dateTime);
@@ -32,10 +32,10 @@ public class RequestApprovedEventTests
         var id = Guid.Empty;
         var dateTime = _fixture.Create<DateTime>();
         var requestId = _fixture.Create<Guid>();
-        
+
         // Act
         var action = () => new RequestApprovedEvent(id, dateTime, requestId);
-        
+
         // Assert
         action.Should()
             .Throw<ArgumentException>()
@@ -49,10 +49,10 @@ public class RequestApprovedEventTests
         var id = _fixture.Create<Guid>();
         var dateTime = default(DateTime);
         var requestId = _fixture.Create<Guid>();
-        
+
         // Act
         var action = () => new RequestApprovedEvent(id, dateTime, requestId);
-        
+
         // Assert
         action.Should()
             .Throw<ArgumentException>()
@@ -66,10 +66,10 @@ public class RequestApprovedEventTests
         var id = _fixture.Create<Guid>();
         var dateTime = _fixture.Create<DateTime>();
         var requestId = Guid.Empty;
-        
+
         // Act
         var action = () => new RequestApprovedEvent(id, dateTime, requestId);
-        
+
         // Assert
         action.Should()
             .Throw<ArgumentException>()
@@ -81,10 +81,10 @@ public class RequestApprovedEventTests
     {
         // Arrange
         var requestId = _fixture.Create<Guid>();
-        
+
         // Act
         var requestApprovedEvent = RequestApprovedEvent.Create(requestId);
-        
+
         // Assert
         requestApprovedEvent.Id.Should().NotBeEmpty();
         requestApprovedEvent.DateTime.Should().NotBe(default);
