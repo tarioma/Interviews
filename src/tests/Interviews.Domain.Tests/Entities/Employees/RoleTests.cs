@@ -21,7 +21,7 @@ public class RoleTests
 
         // Assert
         role.Id.Should().Be(id);
-        role.Name.Should().Be(name);
+        role.Name.Should().Be(name.Trim());
     }
 
     [Fact]
@@ -85,6 +85,6 @@ public class RoleTests
 
         // Assert
         role.Id.Should().NotBeEmpty();
-        role.Name.Should().Be(name);
+        role.Name.Should().Be(name.Trim());
     }
 }

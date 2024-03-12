@@ -14,171 +14,77 @@ public class WorkflowStepTests
     public WorkflowStepTests()
     {
         _fixture = new Fixture();
-        _fixture.Customize(new CompositeCustomization(
-            new WorkflowStepCustomization(),
-            new WorkflowStepTemplateCustomization()
-        ));
+        _fixture.Customize(new WorkflowStepTemplateCustomization());
     }
 
-    [Fact]
-    public void Init_CorrectParamsAndNullEmployeeId_SuccessInit()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public void Init_CorrectParamsWithoutEmployeeId_SuccessInit(object? employeeId)
     {
         // Arrange
         var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
         var order = _fixture.Create<int>();
         var status = Status.Pending;
-        Guid? employeeId = null;
+        Guid? certainEmployeeId = employeeId is null ? null : Guid.Empty;
         var roleId = _fixture.Create<Guid>();
         var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
 
         // Act
-        var workflowStep = new WorkflowStep(name, order, status, employeeId, roleId, comment);
+        var workflowStep = new WorkflowStep(name, order, status, certainEmployeeId, roleId, comment);
 
         // Assert
-        workflowStep.Name.Should().Be(name);
+        workflowStep.Name.Should().Be(name.Trim());
         workflowStep.Order.Should().Be(order);
-        workflowStep.EmployeeId.Should().Be(employeeId);
+        workflowStep.EmployeeId.Should().Be(certainEmployeeId);
         workflowStep.RoleId.Should().Be(roleId);
         workflowStep.Status.Should().Be(status);
-        workflowStep.Comment.Should().Be(comment);
+        workflowStep.Comment.Should().Be(comment.Trim());
     }
 
-    [Fact]
-    public void Init_CorrectParamsAndEmptyGuidEmployeeId_SuccessInit()
-    {
-        // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
-        var order = _fixture.Create<int>();
-        var status = Status.Pending;
-        Guid? employeeId = Guid.Empty;
-        var roleId = _fixture.Create<Guid>();
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
-
-        // Act
-        var workflowStep = new WorkflowStep(name, order, status, employeeId, roleId, comment);
-
-        // Assert
-        workflowStep.Name.Should().Be(name);
-        workflowStep.Order.Should().Be(order);
-        workflowStep.EmployeeId.Should().Be(employeeId);
-        workflowStep.RoleId.Should().Be(roleId);
-        workflowStep.Status.Should().Be(status);
-        workflowStep.Comment.Should().Be(comment);
-    }
-
-    [Fact]
-    public void Init_CorrectParamsAndNullRoleId_SuccessInit()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public void Init_CorrectParamsWithoutRoleId_SuccessInit(object? roleId)
     {
         // Arrange
         var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
         var order = _fixture.Create<int>();
         var status = Status.Pending;
         var employeeId = _fixture.Create<Guid>();
-        Guid? roleId = null;
+        Guid? certainRoleId = roleId is null ? null : Guid.Empty;
         var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
 
         // Act
-        var workflowStep = new WorkflowStep(name, order, status, employeeId, roleId, comment);
+        var workflowStep = new WorkflowStep(name, order, status, employeeId, certainRoleId, comment);
 
         // Assert
-        workflowStep.Name.Should().Be(name);
+        workflowStep.Name.Should().Be(name.Trim());
         workflowStep.Order.Should().Be(order);
         workflowStep.EmployeeId.Should().Be(employeeId);
-        workflowStep.RoleId.Should().Be(roleId);
+        workflowStep.RoleId.Should().Be(certainRoleId);
         workflowStep.Status.Should().Be(status);
-        workflowStep.Comment.Should().Be(comment);
+        workflowStep.Comment.Should().Be(comment.Trim());
     }
 
-    [Fact]
-    public void Init_CorrectParamsAndEmptyGuidRoleId_SuccessInit()
+    [Theory]
+    [InlineData(null, null)]
+    [InlineData(null, "")]
+    [InlineData("", null)]
+    [InlineData("", "")]
+    public void Init_WithoutEmployeeIdAndRoleId_ThrowsArgumentException(object? employeeId, object? roleId)
     {
         // Arrange
         var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
         var order = _fixture.Create<int>();
         var status = Status.Pending;
-        var employeeId = _fixture.Create<Guid>();
-        Guid? roleId = Guid.Empty;
+        Guid? certainEmployeeId = employeeId is null ? null : Guid.Empty;
+        Guid? certainRoleId = roleId is null ? null : Guid.Empty;
+
         var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
 
         // Act
-        var workflowStep = new WorkflowStep(name, order, status, employeeId, roleId, comment);
-
-        // Assert
-        workflowStep.Name.Should().Be(name);
-        workflowStep.Order.Should().Be(order);
-        workflowStep.EmployeeId.Should().Be(employeeId);
-        workflowStep.RoleId.Should().Be(roleId);
-        workflowStep.Status.Should().Be(status);
-        workflowStep.Comment.Should().Be(comment);
-    }
-
-    [Fact]
-    public void Init_NullEmployeeIdAndNullRoleId_ThrowsArgumentException()
-    {
-        // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
-        var order = _fixture.Create<int>();
-        var status = Status.Pending;
-        Guid? employeeId = null;
-        Guid? roleId = null;
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
-
-        // Act
-        var action = () => new WorkflowStep(name, order, status, employeeId, roleId, comment);
-
-        // Assert
-        action.Should().Throw<ArgumentException>();
-    }
-
-    [Fact]
-    public void Init_EmptyGuidEmployeeIdAndNullRoleId_ThrowsArgumentException()
-    {
-        // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
-        var order = _fixture.Create<int>();
-        var status = Status.Pending;
-        var employeeId = Guid.Empty;
-        Guid? roleId = null;
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
-
-        // Act
-        var action = () => new WorkflowStep(name, order, status, employeeId, roleId, comment);
-
-        // Assert
-        action.Should().Throw<ArgumentException>();
-    }
-
-    [Fact]
-    public void Init_NullEmployeeIdAndEmptyGuidRoleId_ThrowsArgumentException()
-    {
-        // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
-        var order = _fixture.Create<int>();
-        var status = Status.Pending;
-        Guid? employeeId = null;
-        var roleId = Guid.Empty;
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
-
-        // Act
-        var action = () => new WorkflowStep(name, order, status, employeeId, roleId, comment);
-
-        // Assert
-        action.Should().Throw<ArgumentException>();
-    }
-
-    [Fact]
-    public void Init_EmptyGuidEmployeeIdAndEmptyGuidRoleId_ThrowsArgumentException()
-    {
-        // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
-        var order = _fixture.Create<int>();
-        var status = Status.Pending;
-        var employeeId = Guid.Empty;
-        var roleId = Guid.Empty;
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
-
-        // Act
-        var action = () => new WorkflowStep(name, order, status, employeeId, roleId, comment);
+        var action = () => new WorkflowStep(name, order, status, certainEmployeeId, certainRoleId, comment);
 
         // Assert
         action.Should().Throw<ArgumentException>();
@@ -225,7 +131,7 @@ public class WorkflowStepTests
     }
 
     [Fact]
-    public void Init_VeryLongName_ThrowsArgumentException()
+    public void Init_TooLongName_ThrowsArgumentException()
     {
         // Arrange
         var name = _fixture.GenerateString(WorkflowStep.MaxNameLength + 1);
@@ -345,7 +251,7 @@ public class WorkflowStepTests
     }
 
     [Fact]
-    public void Create_NullWorkflowStepTemplate_ThrowArgumentNullException()
+    public void Create_NullWorkflowStepTemplate_ThrowsArgumentNullException()
     {
         // Arrange
         WorkflowStepTemplate workflowStepTemplate = null!;
@@ -361,7 +267,7 @@ public class WorkflowStepTests
     }
 
     [Fact]
-    public void Approve_ByEmployeeId_SuccessApproved()
+    public void Approve_WithEmployeeId_SuccessApproved()
     {
         // Arrange
         var employee = _fixture.Create<Employee>();
@@ -376,11 +282,11 @@ public class WorkflowStepTests
 
         // Assert
         workflowStep.Status.Should().Be(Status.Approved);
-        workflowStep.Comment.Should().Be(comment);
+        workflowStep.Comment.Should().Be(comment.Trim());
     }
 
     [Fact]
-    public void Approve_ByRoleId_SuccessApproved()
+    public void Approve_WithRoleId_SuccessApproved()
     {
         // Arrange
         var employee = _fixture.Create<Employee>();
@@ -395,7 +301,7 @@ public class WorkflowStepTests
 
         // Assert
         workflowStep.Status.Should().Be(Status.Approved);
-        workflowStep.Comment.Should().Be(comment);
+        workflowStep.Comment.Should().Be(comment.Trim());
     }
 
     [Fact]
@@ -417,7 +323,7 @@ public class WorkflowStepTests
     }
 
     [Fact]
-    public void Reject_ByEmployeeId_SuccessRejected()
+    public void Reject_WithEmployeeId_SuccessRejected()
     {
         // Arrange
         var employee = _fixture.Create<Employee>();
@@ -432,11 +338,11 @@ public class WorkflowStepTests
 
         // Assert
         workflowStep.Status.Should().Be(Status.Rejected);
-        workflowStep.Comment.Should().Be(comment);
+        workflowStep.Comment.Should().Be(comment.Trim());
     }
 
     [Fact]
-    public void Reject_ByRoleId_SuccessRejected()
+    public void Reject_WithRoleId_SuccessRejected()
     {
         // Arrange
         var employee = _fixture.Create<Employee>();
@@ -451,7 +357,7 @@ public class WorkflowStepTests
 
         // Assert
         workflowStep.Status.Should().Be(Status.Rejected);
-        workflowStep.Comment.Should().Be(comment);
+        workflowStep.Comment.Should().Be(comment.Trim());
     }
 
     [Fact]
@@ -473,7 +379,7 @@ public class WorkflowStepTests
     }
 
     [Fact]
-    public void ToPending_Success()
+    public void ToPending_SuccessChanged()
     {
         // Arrange
         var workflowStep = _fixture.Create<WorkflowStep>();

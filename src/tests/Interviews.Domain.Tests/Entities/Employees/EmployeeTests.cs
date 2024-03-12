@@ -30,7 +30,7 @@ public class EmployeeTests
 
         // Assert
         employee.Id.Should().Be(id);
-        employee.Name.Should().Be(name);
+        employee.Name.Should().Be(name.Trim());
         employee.EmailAddress.Should().Be(emailAddress);
         employee.RoleId.Should().Be(roleId);
     }
@@ -74,7 +74,7 @@ public class EmployeeTests
     }
 
     [Fact]
-    public void Init_VeryLongName_ThrowsArgumentException()
+    public void Init_TooLongName_ThrowsArgumentException()
     {
         // Arrange
         var id = _fixture.Create<Guid>();
@@ -140,7 +140,7 @@ public class EmployeeTests
 
         // Assert
         employee.Id.Should().NotBeEmpty();
-        employee.Name.Should().Be(name);
+        employee.Name.Should().Be(name.Trim());
         employee.EmailAddress.Should().Be(emailAddress);
         employee.RoleId.Should().Be(roleId);
     }

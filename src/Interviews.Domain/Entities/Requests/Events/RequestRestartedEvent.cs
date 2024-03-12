@@ -1,12 +1,8 @@
 ﻿namespace Interviews.Domain.Entities.Requests.Events;
 
-public class RequestRestartedEvent : RequestEvent
+public class RequestRestartedEvent(Guid id, DateTime dateTime, Guid requestId)
+    : RequestEvent(id, dateTime, requestId)
 {
-    public RequestRestartedEvent(Guid id, DateTime dateTime, Guid requestId)
-        : base(id, dateTime, requestId)
-    {
-    }
-
     internal static RequestRestartedEvent Create(Guid requestId)
     {
         var id = Guid.NewGuid();

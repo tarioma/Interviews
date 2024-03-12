@@ -1,12 +1,8 @@
 ﻿namespace Interviews.Domain.Entities.Requests.Events;
 
-public class RequestRejectedEvent : RequestEvent
+public class RequestRejectedEvent(Guid id, DateTime dateTime, Guid requestId)
+    : RequestEvent(id, dateTime, requestId)
 {
-    public RequestRejectedEvent(Guid id, DateTime dateTime, Guid requestId)
-        : base(id, dateTime, requestId)
-    {
-    }
-
     internal static RequestRejectedEvent Create(Guid requestId)
     {
         var id = Guid.NewGuid();

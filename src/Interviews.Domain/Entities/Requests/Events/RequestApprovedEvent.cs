@@ -1,12 +1,8 @@
 ﻿namespace Interviews.Domain.Entities.Requests.Events;
 
-public class RequestApprovedEvent : RequestEvent
+public class RequestApprovedEvent(Guid id, DateTime dateTime, Guid requestId)
+    : RequestEvent(id, dateTime, requestId)
 {
-    public RequestApprovedEvent(Guid id, DateTime dateTime, Guid requestId)
-        : base(id, dateTime, requestId)
-    {
-    }
-
     internal static RequestApprovedEvent Create(Guid requestId)
     {
         var id = Guid.NewGuid();

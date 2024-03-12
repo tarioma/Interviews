@@ -8,7 +8,7 @@ public class Workflow
 {
     internal const int MaxNameLength = 100;
 
-    public Workflow(Guid workflowTemplateId, string name, IReadOnlyCollection<WorkflowStep> steps)
+    internal Workflow(Guid workflowTemplateId, string name, IReadOnlyCollection<WorkflowStep> steps)
     {
         Guard.Against.Default(workflowTemplateId);
         Guard.Against.NullOrWhiteSpace(name);

@@ -9,7 +9,7 @@ public class Request
 {
     private readonly List<RequestEvent> _events;
 
-    public Request(Guid id, Document document, Workflow workflow, Guid employeeId)
+    internal Request(Guid id, Document document, Workflow workflow, Guid employeeId)
     {
         Guard.Against.Default(id);
         Guard.Against.Null(workflow);
@@ -46,7 +46,6 @@ public class Request
     public void Approve(Employee employee, string? comment = null)
     {
         Workflow.Approve(employee, comment);
-
         _events.Add(IsApproved()
             ? RequestApprovedEvent.Create(Id)
             : RequestNextStepEvent.Create(Id));
@@ -60,8 +59,8 @@ public class Request
 
     public void Restart(Document document)
     {
-        SetDocument(document);
         Workflow.Restart();
+        SetDocument(document);
         _events.Add(RequestRestartedEvent.Create(Id));
     }
 

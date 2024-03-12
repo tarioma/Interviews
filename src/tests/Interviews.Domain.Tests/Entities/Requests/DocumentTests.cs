@@ -29,7 +29,7 @@ public class DocumentTests
         var document = new Document(name, dateOfBirth, emailAddress);
 
         // Assert
-        document.Name.Should().Be(name);
+        document.Name.Should().Be(name.Trim());
         document.DateOfBirth.Should().Be(dateOfBirth);
         document.EmailAddress.Should().Be(emailAddress);
     }
@@ -54,7 +54,7 @@ public class DocumentTests
     }
 
     [Fact]
-    public void Init_VeryLongName_ThrowsArgumentException()
+    public void Init_TooLongName_ThrowsArgumentException()
     {
         // Arrange
         var name = _fixture.GenerateString(Document.MaxNameLength + 1);

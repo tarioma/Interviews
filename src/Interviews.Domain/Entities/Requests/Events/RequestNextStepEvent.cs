@@ -1,12 +1,8 @@
 ﻿namespace Interviews.Domain.Entities.Requests.Events;
 
-public class RequestNextStepEvent : RequestEvent
+public class RequestNextStepEvent(Guid id, DateTime dateTime, Guid requestId)
+    : RequestEvent(id, dateTime, requestId)
 {
-    public RequestNextStepEvent(Guid id, DateTime dateTime, Guid requestId)
-        : base(id, dateTime, requestId)
-    {
-    }
-
     internal static RequestNextStepEvent Create(Guid requestId)
     {
         var id = Guid.NewGuid();

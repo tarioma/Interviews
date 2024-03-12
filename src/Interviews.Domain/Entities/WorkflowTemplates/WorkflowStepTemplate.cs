@@ -15,7 +15,7 @@ public class WorkflowStepTemplate
         var employeeIdIsDefined = employeeId is null || employeeId == Guid.Empty;
         var roleIdIsDefined = roleId is null || roleId == Guid.Empty;
 
-        if (!(employeeIdIsDefined || roleIdIsDefined))
+        if (!employeeIdIsDefined && !roleIdIsDefined)
         {
             throw new ArgumentException($"Один из параметров {nameof(employeeId)} или {nameof(roleId)} обязательный.");
         }

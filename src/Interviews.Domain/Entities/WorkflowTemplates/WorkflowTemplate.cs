@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.Requests;
 
@@ -9,22 +8,21 @@ public class WorkflowTemplate
 {
     internal const int MaxNameLength = 100;
 
-    public WorkflowTemplate(Guid id, string name, IReadOnlyCollection<WorkflowStepTemplate> steps)
+    internal WorkflowTemplate(Guid id, string name, IReadOnlyCollection<WorkflowStepTemplate> steps)
     {
         Guard.Against.Default(id);
         Guard.Against.NullOrWhiteSpace(name);
         Guard.Against.StringTooLong(name, MaxNameLength);
-        Guard.Against.NullOrEmpty(steps);
 
         ValidateSteps(steps);
 
         Id = id;
-        SetName(name);
+        Name = name.Trim();
         Steps = steps;
     }
 
     public Guid Id { get; }
-    public string Name { get; private set; }
+    public string Name { get; }
     public IReadOnlyCollection<WorkflowStepTemplate> Steps { get; }
 
     public static WorkflowTemplate Create(string name, IReadOnlyCollection<WorkflowStepTemplate> steps)
@@ -39,15 +37,6 @@ public class WorkflowTemplate
         var workflow = Workflow.Create(this);
 
         return Request.Create(document, workflow, employee.Id);
-    }
-
-    [MemberNotNull(nameof(Name))]
-    private void SetName(string name)
-    {
-        Guard.Against.NullOrWhiteSpace(name);
-        Guard.Against.StringTooLong(name, MaxNameLength);
-
-        Name = name.Trim();
     }
 
     private static void ValidateSteps(IReadOnlyCollection<WorkflowStepTemplate> steps)

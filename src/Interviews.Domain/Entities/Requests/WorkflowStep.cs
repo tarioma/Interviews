@@ -9,7 +9,7 @@ public class WorkflowStep
     internal const int MaxNameLength = 100;
     internal const int MaxCommentLength = 500;
 
-    public WorkflowStep(
+    internal WorkflowStep(
         string name,
         int order,
         Status status,
@@ -24,7 +24,7 @@ public class WorkflowStep
         var employeeIdIsDefined = employeeId is null || employeeId == Guid.Empty;
         var roleIdIsDefined = roleId is null || roleId == Guid.Empty;
 
-        if (!(employeeIdIsDefined || roleIdIsDefined))
+        if (!employeeIdIsDefined && !roleIdIsDefined)
         {
             throw new ArgumentException($"Один из параметров {nameof(employeeId)} или {nameof(roleId)} обязательный.");
         }
@@ -114,6 +114,6 @@ public class WorkflowStep
         Guard.Against.NullOrWhiteSpace(comment);
         Guard.Against.StringTooLong(comment, MaxCommentLength);
 
-        Comment = comment;
+        Comment = comment.Trim();
     }
 }
