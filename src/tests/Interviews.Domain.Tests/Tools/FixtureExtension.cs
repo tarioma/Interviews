@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Interviews.Domain.Entities.Requests;
 using Interviews.Domain.Entities.WorkflowTemplates;
 
 namespace Interviews.Domain.Tests.Tools;
@@ -14,7 +15,18 @@ internal static class FixtureExtension
     internal static int GenerateNonNegativeNumber(this IFixture fixture) =>
         Math.Abs(fixture.Create<int>());
 
-    internal static IReadOnlyCollection<WorkflowStepTemplate> GenerateWorkflowStepTemplates(this IFixture fixture) =>
+    internal static HashSet<WorkflowStep> GenerateWorkflowSteps(this IFixture fixture) =>
+        Enumerable.Range(0, 10).Select(order =>
+        {
+            var name = fixture.GenerateString(WorkflowStep.MaxNameLength);
+            var status = Status.Pending;
+            var employeeId = fixture.Create<Guid>();
+            var roleId = Guid.Empty;
+
+            return new WorkflowStep(name, order, status, employeeId, roleId);
+        }).ToHashSet();
+
+    internal static HashSet<WorkflowStepTemplate> GenerateWorkflowStepTemplates(this IFixture fixture) =>
         Enumerable.Range(0, 10).Select(order =>
         {
             var name = fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
