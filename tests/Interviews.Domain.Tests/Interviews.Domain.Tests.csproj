@@ -25,7 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Interviews.Domain\Interviews.Domain.csproj" />
+      <ProjectReference Include="..\..\src\Interviews.Domain\Interviews.Domain.csproj" />
     </ItemGroup>
 
 </Project>
