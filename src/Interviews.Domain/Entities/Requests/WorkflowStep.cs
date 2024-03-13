@@ -114,6 +114,6 @@ public class WorkflowStep
         Guard.Against.NullOrWhiteSpace(comment);
         Guard.Against.StringTooLong(comment, MaxCommentLength);
 
-        Comment = comment.Trim();
+        Comment = comment;
     }
 }

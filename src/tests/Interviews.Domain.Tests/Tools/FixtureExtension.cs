@@ -1,4 +1,6 @@
 ﻿using AutoFixture;
+using Interviews.Domain.Entities;
+using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.Requests;
 using Interviews.Domain.Entities.WorkflowTemplates;
 
@@ -12,27 +14,39 @@ internal static class FixtureExtension
     internal static DateOnly GenerateDateOfBirth(this IFixture fixture, int age) =>
         DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-age));
 
-    internal static int GenerateNonNegativeNumber(this IFixture fixture) =>
-        Math.Abs(fixture.Create<int>());
+    internal static HashSet<WorkflowStepTemplate> GenerateWorkflowStepTemplatesWithEmployeeId(
+        this IFixture fixture, int count = 1)
+    {
+        var name = fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var employeeId = fixture.Create<Guid>();
+        var roleId = Guid.Empty;
 
-    internal static HashSet<WorkflowStep> GenerateWorkflowSteps(this IFixture fixture) =>
-        Enumerable.Range(0, 10).Select(order =>
-        {
-            var name = fixture.GenerateString(WorkflowStep.MaxNameLength);
-            var status = Status.Pending;
-            var employeeId = fixture.Create<Guid>();
-            var roleId = Guid.Empty;
+        return Enumerable.Range(0, count)
+            .Select(order => new WorkflowStepTemplate(name, order, employeeId, roleId))
+            .ToHashSet();
+    }
 
-            return new WorkflowStep(name, order, status, employeeId, roleId);
-        }).ToHashSet();
+    internal static HashSet<WorkflowStep> GenerateWorkflowStepsWithEmployeeId(this IFixture fixture, int count = 1) =>
+        fixture.GenerateWorkflowStepTemplatesWithEmployeeId(count)
+            .Select(wst => WorkflowStep.Create(wst))
+            .ToHashSet();
 
-    internal static HashSet<WorkflowStepTemplate> GenerateWorkflowStepTemplates(this IFixture fixture) =>
-        Enumerable.Range(0, 10).Select(order =>
-        {
-            var name = fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
-            var employeeId = fixture.Create<Guid>();
-            var roleId = Guid.Empty;
+    internal static Employee GenerateEmployeeWithId(this IFixture fixture, Guid id)
+    {
+        fixture.Customize(new EmailAddressCustomization());
 
-            return new WorkflowStepTemplate(name, order, employeeId, roleId);
-        }).ToHashSet();
+        var name = fixture.GenerateString(Employee.MaxNameLength);
+        var emailAddress = fixture.Create<EmailAddress>();
+        var roleId = fixture.Create<Guid>();
+
+        return new Employee(id, name, emailAddress, roleId);
+    }
+
+    internal static Workflow GenerateWorkflowWithStepsCount(this IFixture fixture, int count)
+    {
+        var workflowTemplateId = fixture.Create<Guid>();
+        var name = fixture.GenerateString(Workflow.MaxNameLength);
+        var steps = fixture.GenerateWorkflowStepsWithEmployeeId(count);
+        return new Workflow(workflowTemplateId, name, steps);
+    }
 }

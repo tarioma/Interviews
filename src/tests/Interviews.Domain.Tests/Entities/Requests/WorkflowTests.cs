@@ -1,7 +1,5 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using Interviews.Domain.Entities;
-using Interviews.Domain.Entities.Employees;
 using Interviews.Domain.Entities.Requests;
 using Interviews.Domain.Entities.WorkflowTemplates;
 using Interviews.Domain.Tests.Tools;
@@ -15,10 +13,7 @@ public class WorkflowTests
     public WorkflowTests()
     {
         _fixture = new Fixture();
-        _fixture.Customize(new CompositeCustomization(
-            new EmailAddressCustomization(),
-            new WorkflowTemplateCustomization()
-        ));
+        _fixture.Customize(new WorkflowTemplateCustomization());
     }
 
     [Fact]
@@ -27,14 +22,14 @@ public class WorkflowTests
         // Arrange
         var workflowTemplateId = _fixture.Create<Guid>();
         var name = _fixture.GenerateString(Workflow.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowSteps();
+        var steps = _fixture.GenerateWorkflowStepsWithEmployeeId();
 
         // Act
         var workflow = new Workflow(workflowTemplateId, name, steps);
 
         // Assert
         workflow.WorkflowTemplateId.Should().Be(workflowTemplateId);
-        workflow.Name.Should().Be(name.Trim());
+        workflow.Name.Should().Be(name);
         workflow.Steps.Should().Equal(steps);
     }
 
@@ -44,7 +39,7 @@ public class WorkflowTests
         // Arrange
         var workflowTemplateId = Guid.Empty;
         var name = _fixture.GenerateString(Workflow.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowSteps();
+        var steps = _fixture.GenerateWorkflowStepsWithEmployeeId();
 
         // Act
         var action = () => new Workflow(workflowTemplateId, name, steps);
@@ -56,17 +51,17 @@ public class WorkflowTests
     }
 
     [Theory]
-    [InlineData(null!)]
+    [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
+    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string? name)
     {
         // Arrange
         var workflowTemplateId = _fixture.Create<Guid>();
-        var steps = _fixture.GenerateWorkflowSteps();
+        var steps = _fixture.GenerateWorkflowStepsWithEmployeeId();
 
         // Act
-        var action = () => new Workflow(workflowTemplateId, name, steps);
+        var action = () => new Workflow(workflowTemplateId, name!, steps);
 
         // Assert
         action.Should()
@@ -80,7 +75,7 @@ public class WorkflowTests
         // Arrange
         var workflowTemplateId = _fixture.Create<Guid>();
         var name = _fixture.GenerateString(Workflow.MaxNameLength + 1);
-        var steps = _fixture.GenerateWorkflowSteps();
+        var steps = _fixture.GenerateWorkflowStepsWithEmployeeId();
 
         // Act
         var action = () => new Workflow(workflowTemplateId, name, steps);
@@ -128,20 +123,10 @@ public class WorkflowTests
     public void IsApproved_CorrectReturn()
     {
         // Arrange
-        var workflowTemplate = _fixture.Create<WorkflowTemplate>();
-        var name = _fixture.GenerateString(Workflow.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowSteps();
-        var workflow = new Workflow(workflowTemplate.Id, name, steps);
-
-        foreach (var step in workflow.Steps)
-        {
-            var id = (Guid)step.EmployeeId!;
-            var employeeName = _fixture.GenerateString(Employee.MaxNameLength);
-            var emailAddress = _fixture.Create<EmailAddress>();
-            var roleId = _fixture.Create<Guid>();
-            var employee = new Employee(id, employeeName, emailAddress, roleId);
-            step.Approve(employee);
-        }
+        var workflow = _fixture.Create<Workflow>();
+        var step = workflow.Steps.First();
+        var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
+        step.Approve(employee);
 
         // Act
         var isApproved = workflow.IsApproved();
@@ -154,17 +139,9 @@ public class WorkflowTests
     public void IsRejected_CorrectReturn()
     {
         // Arrange
-        var workflowTemplate = _fixture.Create<WorkflowTemplate>();
-        var name = _fixture.GenerateString(Workflow.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowSteps();
-        var workflow = new Workflow(workflowTemplate.Id, name, steps);
-
+        var workflow = _fixture.Create<Workflow>();
         var step = workflow.Steps.First();
-        var id = (Guid)step.EmployeeId!;
-        var employeeName = _fixture.GenerateString(Employee.MaxNameLength);
-        var emailAddress = _fixture.Create<EmailAddress>();
-        var roleId = _fixture.Create<Guid>();
-        var employee = new Employee(id, employeeName, emailAddress, roleId);
+        var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
         step.Reject(employee);
 
         // Act
@@ -178,99 +155,61 @@ public class WorkflowTests
     public void Approve_AllStepsApproved()
     {
         // Arrange
-        var workflowTemplate = _fixture.Create<WorkflowTemplate>();
-        var name = _fixture.GenerateString(Workflow.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowSteps();
-        var workflow = new Workflow(workflowTemplate.Id, name, steps);
+        var workflow = _fixture.Create<Workflow>();
+        var step = workflow.Steps.First();
+        var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
+        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
 
         // Act
-        foreach (var step in workflow.Steps)
-        {
-            var id = (Guid)step.EmployeeId!;
-            var employeeName = _fixture.GenerateString(Employee.MaxNameLength);
-            var emailAddress = _fixture.Create<EmailAddress>();
-            var roleId = _fixture.Create<Guid>();
-            var employee = new Employee(id, employeeName, emailAddress, roleId);
-            workflow.Approve(employee);
-        }
-        var isApproved = workflow.Steps.All(s => s.Status == Status.Approved);
+        workflow.Approve(employee, comment);
 
         // Assert
-        isApproved.Should().BeTrue();
+        workflow.Steps
+            .Should()
+            .Contain(s => s.Status == Status.Approved && s.Comment == comment);
     }
 
     [Fact]
     public void Approve_AlreadyApproved_ThrowsException()
     {
         // Arrange
-        var workflowTemplate = _fixture.Create<WorkflowTemplate>();
-        var name = _fixture.GenerateString(Workflow.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowSteps();
-        var workflow = new Workflow(workflowTemplate.Id, name, steps);
+        var workflow = _fixture.Create<Workflow>();
+        var step = workflow.Steps.First();
+        var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
+        workflow.Approve(employee);
 
-        foreach (var step in workflow.Steps)
-        {
-            var id = (Guid)step.EmployeeId!;
-            var employeeName = _fixture.GenerateString(Employee.MaxNameLength);
-            var emailAddress = _fixture.Create<EmailAddress>();
-            var roleId = _fixture.Create<Guid>();
-            var employee = new Employee(id, employeeName, emailAddress, roleId);
-            workflow.Approve(employee);
-        }
+        // Act
+        var action = () => workflow.Approve(employee);
 
-        // Act & Assert
-        {
-            var step = workflow.Steps.First();
-            var id = (Guid)step.EmployeeId!;
-            var employeeName = _fixture.GenerateString(Employee.MaxNameLength);
-            var emailAddress = _fixture.Create<EmailAddress>();
-            var roleId = _fixture.Create<Guid>();
-            var employee = new Employee(id, employeeName, emailAddress, roleId);
-            var action = () => workflow.Approve(employee);
-
-            action.Should().Throw<Exception>();
-        }
+        // Assert
+        action.Should().Throw<Exception>();
     }
 
     [Fact]
     public void Reject_AnyStepRejected()
     {
         // Arrange
-        var workflowTemplate = _fixture.Create<WorkflowTemplate>();
-        var name = _fixture.GenerateString(Workflow.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowSteps();
-        var workflow = new Workflow(workflowTemplate.Id, name, steps);
-
+        var workflow = _fixture.Create<Workflow>();
         var step = workflow.Steps.First();
-        var id = (Guid)step.EmployeeId!;
-        var employeeName = _fixture.GenerateString(Employee.MaxNameLength);
-        var emailAddress = _fixture.Create<EmailAddress>();
-        var roleId = _fixture.Create<Guid>();
-        var employee = new Employee(id, employeeName, emailAddress, roleId);
+        var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
+        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
 
         // Act
-        workflow.Reject(employee);
-        var isRejected = workflow.Steps.Any(s => s.Status == Status.Rejected);
+        workflow.Reject(employee, comment);
 
         // Assert
-        isRejected.Should().BeTrue();
+        workflow.Steps
+            .Should()
+            .Contain(s => s.Status == Status.Rejected && s.Comment == comment);
     }
 
     [Fact]
     public void Reject_AlreadyRejected_ThrowsException()
     {
         // Arrange
-        var workflowTemplate = _fixture.Create<WorkflowTemplate>();
-        var name = _fixture.GenerateString(Workflow.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowSteps();
-        var workflow = new Workflow(workflowTemplate.Id, name, steps);
-
+        var workflow = _fixture.Create<Workflow>();
         var step = workflow.Steps.First();
-        var id = (Guid)step.EmployeeId!;
-        var employeeName = _fixture.GenerateString(Employee.MaxNameLength);
-        var emailAddress = _fixture.Create<EmailAddress>();
-        var roleId = _fixture.Create<Guid>();
-        var employee = new Employee(id, employeeName, emailAddress, roleId);
+        var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
         workflow.Reject(employee);
 
         // Act
@@ -284,16 +223,14 @@ public class WorkflowTests
     public void Restart_AllStepsWithStatusPending()
     {
         // Arrange
-        var workflowTemplate = _fixture.Create<WorkflowTemplate>();
-        var name = _fixture.GenerateString(Workflow.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowSteps();
-        var workflow = new Workflow(workflowTemplate.Id, name, steps);
+        var workflow = _fixture.Create<Workflow>();
 
         // Act
         workflow.Restart();
-        var isRestarted = workflow.Steps.All(s => s.Status == Status.Pending);
 
         // Assert
-        isRestarted.Should().BeTrue();
+        workflow.Steps
+            .Should()
+            .OnlyContain(step => step.Status == Status.Pending && step.Comment == null);
     }
 }

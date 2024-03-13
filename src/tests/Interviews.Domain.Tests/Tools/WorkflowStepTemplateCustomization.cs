@@ -10,7 +10,7 @@ public class WorkflowStepTemplateCustomization : ICustomization
         fixture.Customize(new EmailAddressCustomization());
 
         var name = fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
-        var order = fixture.GenerateNonNegativeNumber();
+        var order = fixture.Create<int>();
         var employeeId = fixture.Create<Guid>();
         var roleId = Guid.Empty;
 

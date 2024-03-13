@@ -15,7 +15,7 @@ public class Employee
         Guard.Against.Default(roleId);
 
         Id = id;
-        Name = name.Trim();
+        Name = name;
         EmailAddress = emailAddress;
         RoleId = roleId;
     }

@@ -30,7 +30,7 @@ public class EmployeeTests
 
         // Assert
         employee.Id.Should().Be(id);
-        employee.Name.Should().Be(name.Trim());
+        employee.Name.Should().Be(name);
         employee.EmailAddress.Should().Be(emailAddress);
         employee.RoleId.Should().Be(roleId);
     }
@@ -54,10 +54,10 @@ public class EmployeeTests
     }
 
     [Theory]
-    [InlineData(null!)]
+    [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
+    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string? name)
     {
         // Arrange
         var id = _fixture.Create<Guid>();
@@ -65,7 +65,7 @@ public class EmployeeTests
         var roleId = _fixture.Create<Guid>();
 
         // Act
-        var action = () => new Employee(id, name, emailAddress, roleId);
+        var action = () => new Employee(id, name!, emailAddress, roleId);
 
         // Assert
         action.Should()
@@ -140,7 +140,7 @@ public class EmployeeTests
 
         // Assert
         employee.Id.Should().NotBeEmpty();
-        employee.Name.Should().Be(name.Trim());
+        employee.Name.Should().Be(name);
         employee.EmailAddress.Should().Be(emailAddress);
         employee.RoleId.Should().Be(roleId);
     }

@@ -20,7 +20,7 @@ public class Document
                 nameof(dateOfBirth));
         }
 
-        Name = name.Trim();
+        Name = name;
         DateOfBirth = dateOfBirth;
         EmailAddress = emailAddress;
     }

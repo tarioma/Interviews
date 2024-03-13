@@ -15,7 +15,7 @@ public class EmailAddressTests
     public void Init_CorrectValue_SuccessInit(string value)
     {
         // Arrange
-        var expectedValue = value.Trim().ToUpperInvariant();
+        var expectedValue = value.ToUpperInvariant();
 
         // Act
         var emailAddress = new EmailAddress(value);
@@ -41,13 +41,13 @@ public class EmailAddressTests
     }
 
     [Theory]
-    [InlineData(null!)]
+    [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Init_NullEmptyOrWhiteSpaceValue_ThrowsArgumentException(string value)
+    public void Init_NullEmptyOrWhiteSpaceValue_ThrowsArgumentException(string? value)
     {
         // Act
-        var action = () => new EmailAddress(value);
+        var action = () => new EmailAddress(value!);
 
         // Assert
         action.Should()

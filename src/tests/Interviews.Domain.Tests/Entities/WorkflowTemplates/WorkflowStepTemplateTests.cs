@@ -24,7 +24,7 @@ public class WorkflowStepTemplateTests
         var workflowStep = new WorkflowStepTemplate(name, order, certainEmployeeId, roleId);
 
         // Assert
-        workflowStep.Name.Should().Be(name.Trim());
+        workflowStep.Name.Should().Be(name);
         workflowStep.Order.Should().Be(order);
         workflowStep.EmployeeId.Should().Be(certainEmployeeId);
         workflowStep.RoleId.Should().Be(roleId);
@@ -45,7 +45,7 @@ public class WorkflowStepTemplateTests
         var workflowStep = new WorkflowStepTemplate(name, order, employeeId, certainRoleId);
 
         // Assert
-        workflowStep.Name.Should().Be(name.Trim());
+        workflowStep.Name.Should().Be(name);
         workflowStep.Order.Should().Be(order);
         workflowStep.EmployeeId.Should().Be(employeeId);
         workflowStep.RoleId.Should().Be(certainRoleId);
@@ -88,10 +88,10 @@ public class WorkflowStepTemplateTests
     }
 
     [Theory]
-    [InlineData(null!)]
+    [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
+    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string? name)
     {
         // Arrange
         var order = _fixture.Create<int>();
@@ -99,7 +99,7 @@ public class WorkflowStepTemplateTests
         Guid? roleId = null;
 
         // Act
-        var action = () => new WorkflowStepTemplate(name, order, employeeId, roleId);
+        var action = () => new WorkflowStepTemplate(name!, order, employeeId, roleId);
 
         // Assert
         action.Should()

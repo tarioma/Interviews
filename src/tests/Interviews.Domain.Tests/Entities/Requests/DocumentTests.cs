@@ -29,23 +29,23 @@ public class DocumentTests
         var document = new Document(name, dateOfBirth, emailAddress);
 
         // Assert
-        document.Name.Should().Be(name.Trim());
+        document.Name.Should().Be(name);
         document.DateOfBirth.Should().Be(dateOfBirth);
         document.EmailAddress.Should().Be(emailAddress);
     }
 
     [Theory]
-    [InlineData(null!)]
+    [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
+    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string? name)
     {
         // Arrange
         var dateOfBirth = _fixture.GenerateDateOfBirth(Document.MinAcceptableAge);
         var emailAddress = _fixture.Create<EmailAddress>();
 
         // Act
-        var action = () => new Document(name, dateOfBirth, emailAddress);
+        var action = () => new Document(name!, dateOfBirth, emailAddress);
 
         // Assert
         action.Should()

@@ -76,15 +76,6 @@ public class Workflow
         }
     }
 
-    private WorkflowStep GetActiveStep()
-    {
-        var activeStep = Steps.Where(s => s.Status == Status.Pending).MinBy(s => s.Order);
-
-        if (activeStep is null)
-        {
-            throw new AggregateException("Нет шага со статусом ожидания.");
-        }
-
-        return activeStep;
-    }
+    private WorkflowStep GetActiveStep() =>
+        Steps.Where(s => s.Status == Status.Pending).MinBy(s => s.Order)!;
 }

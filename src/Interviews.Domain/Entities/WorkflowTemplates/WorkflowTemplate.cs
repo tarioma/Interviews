@@ -17,7 +17,7 @@ public class WorkflowTemplate
         ValidateSteps(steps);
 
         Id = id;
-        Name = name.Trim();
+        Name = name;
         Steps = steps;
     }
 

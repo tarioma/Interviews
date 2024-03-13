@@ -11,8 +11,6 @@ public class EmailAddress
         Guard.Against.NullOrWhiteSpace(value);
         Guard.Against.StringTooLong(value, MaxValueLength);
 
-        value = value.Trim();
-
         if (!IsEmail(value))
         {
             throw new ArgumentException("Адрес навалиден.", nameof(value));

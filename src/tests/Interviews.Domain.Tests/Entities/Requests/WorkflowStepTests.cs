@@ -34,12 +34,12 @@ public class WorkflowStepTests
         var workflowStep = new WorkflowStep(name, order, status, certainEmployeeId, roleId, comment);
 
         // Assert
-        workflowStep.Name.Should().Be(name.Trim());
+        workflowStep.Name.Should().Be(name);
         workflowStep.Order.Should().Be(order);
         workflowStep.EmployeeId.Should().Be(certainEmployeeId);
         workflowStep.RoleId.Should().Be(roleId);
         workflowStep.Status.Should().Be(status);
-        workflowStep.Comment.Should().Be(comment.Trim());
+        workflowStep.Comment.Should().Be(comment);
     }
 
     [Theory]
@@ -59,12 +59,12 @@ public class WorkflowStepTests
         var workflowStep = new WorkflowStep(name, order, status, employeeId, certainRoleId, comment);
 
         // Assert
-        workflowStep.Name.Should().Be(name.Trim());
+        workflowStep.Name.Should().Be(name);
         workflowStep.Order.Should().Be(order);
         workflowStep.EmployeeId.Should().Be(employeeId);
         workflowStep.RoleId.Should().Be(certainRoleId);
         workflowStep.Status.Should().Be(status);
-        workflowStep.Comment.Should().Be(comment.Trim());
+        workflowStep.Comment.Should().Be(comment);
     }
 
     [Theory]
@@ -109,10 +109,10 @@ public class WorkflowStepTests
     }
 
     [Theory]
-    [InlineData(null!)]
+    [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
+    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string? name)
     {
         // Arrange
         var order = _fixture.Create<int>();
@@ -122,7 +122,7 @@ public class WorkflowStepTests
         var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
 
         // Act
-        var action = () => new WorkflowStep(name, order, status, employeeId, roleId, comment);
+        var action = () => new WorkflowStep(name!, order, status, employeeId, roleId, comment);
 
         // Assert
         action.Should()
@@ -272,7 +272,7 @@ public class WorkflowStepTests
         // Arrange
         var employee = _fixture.Create<Employee>();
         var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
-        var order = _fixture.GenerateNonNegativeNumber();
+        var order = _fixture.Create<int>();
         var workflowStepTemplate = new WorkflowStepTemplate(name, order, employeeId: employee.Id);
         var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
@@ -282,7 +282,7 @@ public class WorkflowStepTests
 
         // Assert
         workflowStep.Status.Should().Be(Status.Approved);
-        workflowStep.Comment.Should().Be(comment.Trim());
+        workflowStep.Comment.Should().Be(comment);
     }
 
     [Fact]
@@ -291,7 +291,7 @@ public class WorkflowStepTests
         // Arrange
         var employee = _fixture.Create<Employee>();
         var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
-        var order = _fixture.GenerateNonNegativeNumber();
+        var order = _fixture.Create<int>();
         var workflowStepTemplate = new WorkflowStepTemplate(name, order, roleId: employee.RoleId);
         var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
@@ -301,7 +301,7 @@ public class WorkflowStepTests
 
         // Assert
         workflowStep.Status.Should().Be(Status.Approved);
-        workflowStep.Comment.Should().Be(comment.Trim());
+        workflowStep.Comment.Should().Be(comment);
     }
 
     [Fact]
@@ -328,7 +328,7 @@ public class WorkflowStepTests
         // Arrange
         var employee = _fixture.Create<Employee>();
         var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
-        var order = _fixture.GenerateNonNegativeNumber();
+        var order = _fixture.Create<int>();
         var workflowStepTemplate = new WorkflowStepTemplate(name, order, employeeId: employee.Id);
         var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
@@ -338,7 +338,7 @@ public class WorkflowStepTests
 
         // Assert
         workflowStep.Status.Should().Be(Status.Rejected);
-        workflowStep.Comment.Should().Be(comment.Trim());
+        workflowStep.Comment.Should().Be(comment);
     }
 
     [Fact]
@@ -347,7 +347,7 @@ public class WorkflowStepTests
         // Arrange
         var employee = _fixture.Create<Employee>();
         var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
-        var order = _fixture.GenerateNonNegativeNumber();
+        var order = _fixture.Create<int>();
         var workflowStepTemplate = new WorkflowStepTemplate(name, order, roleId: employee.RoleId);
         var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
@@ -357,7 +357,7 @@ public class WorkflowStepTests
 
         // Assert
         workflowStep.Status.Should().Be(Status.Rejected);
-        workflowStep.Comment.Should().Be(comment.Trim());
+        workflowStep.Comment.Should().Be(comment);
     }
 
     [Fact]

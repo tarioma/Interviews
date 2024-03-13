@@ -21,7 +21,7 @@ public class RoleTests
 
         // Assert
         role.Id.Should().Be(id);
-        role.Name.Should().Be(name.Trim());
+        role.Name.Should().Be(name);
     }
 
     [Fact]
@@ -41,16 +41,16 @@ public class RoleTests
     }
 
     [Theory]
-    [InlineData(null!)]
+    [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
+    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string? name)
     {
         // Arrange
         var id = _fixture.Create<Guid>();
 
         // Act
-        var action = () => new Role(id, name);
+        var action = () => new Role(id, name!);
 
         // Assert
         action.Should()
@@ -85,6 +85,6 @@ public class RoleTests
 
         // Assert
         role.Id.Should().NotBeEmpty();
-        role.Name.Should().Be(name.Trim());
+        role.Name.Should().Be(name);
     }
 }

@@ -25,7 +25,7 @@ public class WorkflowStepTemplate
             throw new ArgumentException($"Можно назначить только {nameof(employeeId)} или {nameof(roleId)}.");
         }
 
-        Name = name.Trim();
+        Name = name;
         Order = order;
         EmployeeId = employeeId;
         RoleId = roleId;

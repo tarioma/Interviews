@@ -26,14 +26,14 @@ public class WorkflowTemplateTests
         // Arrange
         var id = _fixture.Create<Guid>();
         var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowStepTemplates();
+        var steps = _fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
 
         // Act
         var workflowStep = new WorkflowTemplate(id, name, steps);
 
         // Assert
         workflowStep.Id.Should().Be(id);
-        workflowStep.Name.Should().Be(name.Trim());
+        workflowStep.Name.Should().Be(name);
         workflowStep.Steps.Should().Equal(steps);
     }
 
@@ -43,7 +43,7 @@ public class WorkflowTemplateTests
         // Arrange
         var id = Guid.Empty;
         var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowStepTemplates();
+        var steps = _fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
 
         // Act
         var action = () => new WorkflowTemplate(id, name, steps);
@@ -55,17 +55,17 @@ public class WorkflowTemplateTests
     }
 
     [Theory]
-    [InlineData(null!)]
+    [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
-    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string name)
+    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string? name)
     {
         // Arrange
         var id = _fixture.Create<Guid>();
-        var steps = _fixture.GenerateWorkflowStepTemplates();
+        var steps = _fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
 
         // Act
-        var action = () => new WorkflowTemplate(id, name, steps);
+        var action = () => new WorkflowTemplate(id, name!, steps);
 
         // Assert
         action.Should()
@@ -79,7 +79,7 @@ public class WorkflowTemplateTests
         // Arrange
         var id = _fixture.Create<Guid>();
         var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength + 1);
-        var steps = _fixture.GenerateWorkflowStepTemplates();
+        var steps = _fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
 
         // Act
         var action = () => new WorkflowTemplate(id, name, steps);
@@ -91,16 +91,16 @@ public class WorkflowTemplateTests
     }
 
     [Theory]
-    [InlineData(null!)]
+    [InlineData(null)]
     [InlineData(default(HashSet<WorkflowStepTemplate>))]
-    public void Init_NullOrEmptySteps_ThrowsArgumentException(IReadOnlyCollection<WorkflowStepTemplate> steps)
+    public void Init_NullOrEmptySteps_ThrowsArgumentException(IReadOnlyCollection<WorkflowStepTemplate>? steps)
     {
         // Arrange
         var id = _fixture.Create<Guid>();
         var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
 
         // Act
-        var action = () => new WorkflowTemplate(id, name, steps);
+        var action = () => new WorkflowTemplate(id, name, steps!);
 
         // Assert
         action.Should()
@@ -137,14 +137,14 @@ public class WorkflowTemplateTests
     {
         // Arrange
         var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowStepTemplates();
+        var steps = _fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
 
         // Act
         var workflowStep = WorkflowTemplate.Create(name, steps);
 
         // Assert
         workflowStep.Id.Should().NotBeEmpty();
-        workflowStep.Name.Should().Be(name.Trim());
+        workflowStep.Name.Should().Be(name);
         workflowStep.Steps.Should().Equal(steps);
     }
 
@@ -156,7 +156,7 @@ public class WorkflowTemplateTests
         var document = _fixture.Create<Document>();
         var id = _fixture.Create<Guid>();
         var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
-        var steps = _fixture.GenerateWorkflowStepTemplates();
+        var steps = _fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
         var workflowTemplate = new WorkflowTemplate(id, name, steps);
 
         // Act
@@ -165,7 +165,7 @@ public class WorkflowTemplateTests
         // Assert
         request.Id.Should().NotBeEmpty();
         request.Document.Should().Be(document);
-        request.Workflow.Should().NotBeNull();
+        request.Workflow.WorkflowTemplateId.Should().Be(id);
         request.EmployeeId.Should().Be(employee.Id);
         request.Events.Should().NotBeNull();
     }

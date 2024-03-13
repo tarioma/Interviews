@@ -10,7 +10,7 @@ public class WorkflowTemplateCustomization : ICustomization
     {
         var id = fixture.Create<Guid>();
         var name = fixture.GenerateString(WorkflowTemplate.MaxNameLength);
-        var steps = fixture.GenerateWorkflowStepTemplates();
+        var steps = fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
 
         fixture.Customize<WorkflowTemplate>(composer =>
             composer.FromFactory(() =>

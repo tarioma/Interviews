@@ -13,7 +13,7 @@ public class Role
         Guard.Against.StringTooLong(name, MaxNameLength);
 
         Id = id;
-        Name = name.Trim();
+        Name = name;
     }
 
     public Guid Id { get; }
