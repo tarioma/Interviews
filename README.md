@@ -32,6 +32,7 @@ classDiagram
         +string Name
         +EmailAddress EmailAddress
         +Guid RoleId
+        ~ctor(id, name, emailAddress, roleId)
         +Create(name, emailAddress, roleId)$ Employee
         +SetName(name)
         +SetEmailAddress(emailAddress)
@@ -39,6 +40,7 @@ classDiagram
     class Role{
         +Guid Id
         +string Name
+        ~ctor(id, name)
         +Create(name)$ Role
         +SetName(name)
     }
@@ -55,6 +57,7 @@ classDiagram
         +Workflow Workflow
         +Guid EmployeeId
         +IReadOnlyCollection~RequestEvent~ Events
+        ~ctor(id, document, workflow, employeeId)
         +Create(document, workflow, employeeId)$ Request
         +IsApproved() bool
         +IsReject() bool
@@ -67,12 +70,14 @@ classDiagram
         +string Name
         +DateOnly DateOfBirth
         +EmailAddress EmailAddress
+        ~ctor(name, dateOfBirth, emailAddress)
         -IsAgeAcceptable(dateOfBirth)$ bool
     }
     class Workflow{
         +Guid WorkflowTemplateId
         +string Name
         +IReadOnlyCollection~WorkflowStep~ Steps
+        ~ctor(workflowTemplateId, name, steps)
         +Create(workflowTemplate)$ Worklfow
         ~IsApproved() bool
         ~IsRejected() bool
@@ -83,9 +88,13 @@ classDiagram
         -GetActiveStep() WorkflowStep
     }
     class WorkflowStep{
-        +WorkflowStepTemplate WorkflowStepTemplate
+        +string Name
+        +int Order
+        +Guid? EmployeeId
+        +Guid? RoleId
         +Status Status
         +string? Comment
+        ~ctor(name, order, status, employeeId?, roleId?, comment?)
         +Create(workflowStepTemplate, comment?)$ WorkflowStep
         ~Approve(employee, comment?)
         ~Reject(employee, comment?)
@@ -98,6 +107,7 @@ classDiagram
         +Guid Id
         +string Name
         +IReadOnlyCollection~WorkflowStepTemplate~ Steps
+        ~ctor(id, name, steps)
         +Create(name, steps)$ WorkflowTemplate
         +CreateRequest(employee, document) Request
         -ValidateSteps(steps)$
@@ -107,26 +117,33 @@ classDiagram
         +int Order
         +Guid? EmployeeId
         +Guid? RoleId
+        ~ctor(name, order, employeeId?, roleId?)
     }
     class RequestEvent{
         <<abstract>>
         +Guid Id
         +DateTime DateTime
         +Guid RequestId
+        ~ctor(id, dateTime, requestId)
     }
     class RequestCreatedEvent{
+        ~ctor(id, dateTime, requestId)
         ~Create(requestId)$ RequestCreatedEvent
     }
     class RequestApprovedEvent{
+        ~ctor(id, dateTime, requestId)
         ~Create(requestId)$ RequestApprovedEvent
     }
     class RequestRejectEvent{
+        ~ctor(id, dateTime, requestId)
         ~Create(requestId)$ RequestRejectEvent
     }
     class RequestRestartedEvent{
+        ~ctor(id, dateTime, requestId)
         ~Create(requestId)$ RequestRestartedEvent
     }
     class RequestNextStepEvent{
+        ~ctor(id, dateTime, requestId)
         ~Create(requestId)$ RequestNextStepEvent
     }
 ```
