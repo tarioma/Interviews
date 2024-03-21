@@ -1,0 +1,3 @@
+﻿namespace Interviews.Application.WorkflowTemplates.GetAllWorkflowTemplates;
+
+public record GetAllWorkflowTemplatesQuery;

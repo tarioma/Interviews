@@ -5,7 +5,8 @@ namespace Interviews.Application.Repositories;
 public interface IRequestRepository
 {
     void Create(Request request);
-    void Delete(Request request);
-    Request GetById(Guid id);
-    IReadOnlySet<Request> GetAll();
+    void Update(Request request);
+    void Delete(Guid requestId);
+    Request GetById(Guid requestId);
+    IEnumerable<Request> GetAll();
 }

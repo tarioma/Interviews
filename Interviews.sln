@@ -4,11 +4,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{234F8923-322
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interviews.Domain", "src\Interviews.Domain\Interviews.Domain.csproj", "{4954ECAB-0222-40BB-8041-6253E190FFE4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5E9760B4-6B28-4704-8E5B-464BFDC92101}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interviews.Domain.Tests", "tests\Interviews.Domain.Tests\Interviews.Domain.Tests.csproj", "{E74B1A50-1CBB-45DD-9A06-C90298A47EDC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interviews.Domain.Tests", "src\Tests\Interviews.Domain.Tests\Interviews.Domain.Tests.csproj", "{E74B1A50-1CBB-45DD-9A06-C90298A47EDC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interviews.Application", "src\Interviews.Application\Interviews.Application.csproj", "{8D729037-6DD9-4DC1-8FD0-BB4E11CF49DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{571E2B2F-97FB-4514-AA00-2C028495AC9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,8 +17,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4954ECAB-0222-40BB-8041-6253E190FFE4} = {234F8923-3227-4958-BF3F-64E3402E4E00}
-		{E74B1A50-1CBB-45DD-9A06-C90298A47EDC} = {5E9760B4-6B28-4704-8E5B-464BFDC92101}
 		{8D729037-6DD9-4DC1-8FD0-BB4E11CF49DF} = {234F8923-3227-4958-BF3F-64E3402E4E00}
+		{571E2B2F-97FB-4514-AA00-2C028495AC9F} = {234F8923-3227-4958-BF3F-64E3402E4E00}
+		{E74B1A50-1CBB-45DD-9A06-C90298A47EDC} = {571E2B2F-97FB-4514-AA00-2C028495AC9F}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4954ECAB-0222-40BB-8041-6253E190FFE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

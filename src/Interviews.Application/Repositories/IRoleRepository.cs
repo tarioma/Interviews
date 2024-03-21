@@ -6,7 +6,7 @@ public interface IRoleRepository
 {
     void Create(Role role);
     void Update(Role role);
-    void Delete(Role role);
-    Role GetById(Guid id);
-    IReadOnlySet<Role> GetAll();
+    void Delete(Guid roleId);
+    Role GetById(Guid roleId);
+    IEnumerable<Role> GetAll();
 }
