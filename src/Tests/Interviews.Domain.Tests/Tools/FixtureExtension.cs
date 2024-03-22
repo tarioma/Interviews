@@ -17,7 +17,7 @@ internal static class FixtureExtension
     internal static HashSet<WorkflowStepTemplate> GenerateWorkflowStepTemplatesWithEmployeeId(
         this IFixture fixture, int count = 1)
     {
-        var name = fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var name = fixture.Create<string>();
         var employeeId = fixture.Create<Guid>();
         var roleId = Guid.Empty;
 
@@ -35,17 +35,18 @@ internal static class FixtureExtension
     {
         fixture.Customize(new EmailAddressCustomization());
 
-        var name = fixture.GenerateString(Employee.MaxNameLength);
+        var name = fixture.Create<string>();
         var emailAddress = fixture.Create<EmailAddress>();
         var roleId = fixture.Create<Guid>();
+        var authData = fixture.Create<AuthData>();
 
-        return new Employee(id, name, emailAddress, roleId);
+        return new Employee(id, name, emailAddress, roleId, authData);
     }
 
     internal static Workflow GenerateWorkflowWithStepsCount(this IFixture fixture, int count)
     {
         var workflowTemplateId = fixture.Create<Guid>();
-        var name = fixture.GenerateString(Workflow.MaxNameLength);
+        var name = fixture.Create<string>();
         var steps = fixture.GenerateWorkflowStepsWithEmployeeId(count);
         return new Workflow(workflowTemplateId, name, steps);
     }

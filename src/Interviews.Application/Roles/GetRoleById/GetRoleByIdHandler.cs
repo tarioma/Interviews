@@ -1,15 +1,15 @@
-﻿using Ardalis.GuardClauses;
-using Interviews.Application.Repositories;
+﻿using Interviews.Application.Repositories;
 using Interviews.Domain.Entities.Employees;
 
 namespace Interviews.Application.Roles.GetRoleById;
 
-public class GetRoleByIdHandler(ITenantRepository tenant) : Handler(tenant)
+public class GetRoleByIdHandler : Handler<GetRoleByIdQuery, Role>
 {
-    public Role Handle(GetRoleByIdQuery command)
+    public GetRoleByIdHandler(ITenantFactory tenantFactory) : base(tenantFactory)
     {
-        Guard.Against.Null(command);
-
-        return Tenant.Roles.GetById(command.RoleId);
     }
+
+    public override Role Handle(GetRoleByIdQuery command) =>
+        TenantFactory.Roles.TryGetById(command.RoleId)
+        ?? throw new Exception($"Нет {nameof(Role)} с таким id.");
 }

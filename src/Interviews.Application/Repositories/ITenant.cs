@@ -1,6 +1,6 @@
 ﻿namespace Interviews.Application.Repositories;
 
-public interface ITenantRepository
+public interface ITenant
 {
     IEmployeeRepository Employees { get; }
     IRequestRepository Requests { get; }

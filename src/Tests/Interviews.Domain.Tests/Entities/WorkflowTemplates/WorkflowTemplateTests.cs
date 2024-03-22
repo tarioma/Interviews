@@ -14,10 +14,8 @@ public class WorkflowTemplateTests
     public WorkflowTemplateTests()
     {
         _fixture = new Fixture();
-        _fixture.Customize(new CompositeCustomization(
-            new WorkflowStepTemplateCustomization(),
-            new DocumentCustomization()
-        ));
+        _fixture.Customize(new WorkflowStepTemplateCustomization());
+        _fixture.Customize(new DocumentCustomization());
     }
 
     [Fact]
@@ -25,7 +23,7 @@ public class WorkflowTemplateTests
     {
         // Arrange
         var id = _fixture.Create<Guid>();
-        var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var steps = _fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
 
         // Act
@@ -42,7 +40,7 @@ public class WorkflowTemplateTests
     {
         // Arrange
         var id = Guid.Empty;
-        var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var steps = _fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
 
         // Act
@@ -97,7 +95,7 @@ public class WorkflowTemplateTests
     {
         // Arrange
         var id = _fixture.Create<Guid>();
-        var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
 
         // Act
         var action = () => new WorkflowTemplate(id, name, steps!);
@@ -113,10 +111,10 @@ public class WorkflowTemplateTests
     {
         // Arrange
         var id = _fixture.Create<Guid>();
-        var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var steps = new[] { 1, 0, 4, 2 }.Select(order =>
         {
-            var stepName = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+            var stepName = _fixture.Create<string>();
             var employeeId = _fixture.Create<Guid>();
             var roleId = Guid.Empty;
 
@@ -136,7 +134,7 @@ public class WorkflowTemplateTests
     public void Create_CorrectParams_SuccessCreateAndReturn()
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var steps = _fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
 
         // Act
@@ -155,7 +153,7 @@ public class WorkflowTemplateTests
         var employee = _fixture.Create<Employee>();
         var document = _fixture.Create<Document>();
         var id = _fixture.Create<Guid>();
-        var name = _fixture.GenerateString(WorkflowTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var steps = _fixture.GenerateWorkflowStepTemplatesWithEmployeeId();
         var workflowTemplate = new WorkflowTemplate(id, name, steps);
 

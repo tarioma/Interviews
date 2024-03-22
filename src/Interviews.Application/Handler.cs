@@ -3,14 +3,16 @@ using Interviews.Application.Repositories;
 
 namespace Interviews.Application;
 
-public abstract class Handler
+public abstract class Handler<TRequest, TResult>
 {
-    protected readonly ITenantRepository Tenant;
+    protected readonly ITenant TenantFactory;
 
-    protected Handler(ITenantRepository tenant)
+    protected Handler(ITenantFactory tenantFactory)
     {
-        Guard.Against.Null(tenant);
+        Guard.Against.Null(tenantFactory);
 
-        Tenant = tenant;
+        TenantFactory = tenantFactory.GetTenant();
     }
+
+    public abstract TResult Handle(TRequest command);
 }

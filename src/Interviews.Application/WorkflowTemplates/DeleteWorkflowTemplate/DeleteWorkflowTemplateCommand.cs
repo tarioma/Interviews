@@ -1,3 +1,0 @@
-﻿namespace Interviews.Application.WorkflowTemplates.DeleteWorkflowTemplate;
-
-public record DeleteWorkflowTemplateCommand(Guid WorkflowTemplateId);

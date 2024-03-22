@@ -1,12 +1,12 @@
-﻿using Interviews.Domain.Entities.Employees;
+﻿using Interviews.Domain.Entities;
+using Interviews.Domain.Entities.Employees;
 
 namespace Interviews.Application.Repositories;
 
 public interface IEmployeeRepository
 {
     void Create(Employee employee);
-    void Update(Employee employee);
-    void Delete(Guid employeeId);
-    Employee GetById(Guid employeeId);
+    Employee? TryGetById(Guid employeeId);
+    Employee? TryGetByEmail(EmailAddress emailAddress);
     IEnumerable<Employee> GetAll();
 }

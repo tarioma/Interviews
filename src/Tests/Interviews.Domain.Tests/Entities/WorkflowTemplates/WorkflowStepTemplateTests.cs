@@ -15,7 +15,7 @@ public class WorkflowStepTemplateTests
     public void Init_CorrectParamsWithoutEmployeeId_SuccessInit(object? employeeId)
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         Guid? certainEmployeeId = employeeId is null ? null : Guid.Empty;
         var roleId = _fixture.Create<Guid>();
@@ -36,7 +36,7 @@ public class WorkflowStepTemplateTests
     public void Init_CorrectParamsWithoutRoleId_SuccessInit(object? roleId)
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var employeeId = _fixture.Create<Guid>();
         Guid? certainRoleId = roleId is null ? null : Guid.Empty;
@@ -59,7 +59,7 @@ public class WorkflowStepTemplateTests
     public void Init_WithoutEmployeeIdAndRoleId_ThrowsArgumentException(object? employeeId, object? roleId)
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         Guid? certainEmployeeId = employeeId is null ? null : Guid.Empty;
         Guid? certainRoleId = roleId is null ? null : Guid.Empty;
@@ -75,7 +75,7 @@ public class WorkflowStepTemplateTests
     public void Init_EmployeeIdAndRoleIdDefined_ThrowsArgumentException()
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var employeeId = _fixture.Create<Guid>();
         var roleId = _fixture.Create<Guid>();
@@ -129,7 +129,7 @@ public class WorkflowStepTemplateTests
     public void Init_NegativeOrder_ThrowsArgumentException()
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = -1;
         var employeeId = _fixture.Create<Guid>();
         Guid? roleId = null;

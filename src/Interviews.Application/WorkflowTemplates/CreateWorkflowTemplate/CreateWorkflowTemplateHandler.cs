@@ -1,18 +1,19 @@
-﻿using Ardalis.GuardClauses;
-using Interviews.Application.Repositories;
+﻿using Interviews.Application.Repositories;
 using Interviews.Domain.Entities.WorkflowTemplates;
 
 namespace Interviews.Application.WorkflowTemplates.CreateWorkflowTemplate;
 
-public class CreateWorkflowTemplateHandler(ITenantRepository tenant) : Handler(tenant)
+public class CreateWorkflowTemplateHandler : Handler<CreateWorkflowTemplateCommand, Guid>
 {
-    public Guid Handle(CreateWorkflowTemplateCommand command)
+    public CreateWorkflowTemplateHandler(ITenantFactory tenantFactory) : base(tenantFactory)
     {
-        Guard.Against.Null(command);
+    }
 
+    public override Guid Handle(CreateWorkflowTemplateCommand command)
+    {
         var workflowTemplate = WorkflowTemplate.Create(command.Name, command.Steps);
-        Tenant.WorkflowTemplates.Create(workflowTemplate);
-        Tenant.Commit();
+        TenantFactory.WorkflowTemplates.Create(workflowTemplate);
+        TenantFactory.Commit();
 
         return workflowTemplate.Id;
     }

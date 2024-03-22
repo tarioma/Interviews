@@ -1,15 +1,14 @@
-﻿using Ardalis.GuardClauses;
-using Interviews.Application.Repositories;
+﻿using Interviews.Application.Repositories;
 using Interviews.Domain.Entities.Requests;
 
 namespace Interviews.Application.Requests.GetAllRequests;
 
-public class GetAllRequestsHandler(ITenantRepository tenant) : Handler(tenant)
+public class GetAllRequestsHandler : Handler<GetAllRequestsQuery, IEnumerable<Request>>
 {
-    public IEnumerable<Request> Handle(GetAllRequestsQuery command)
+    public GetAllRequestsHandler(ITenantFactory tenantFactory) : base(tenantFactory)
     {
-        Guard.Against.Null(command);
-
-        return Tenant.Requests.GetAll();
     }
+
+    public override IEnumerable<Request> Handle(GetAllRequestsQuery command) =>
+        TenantFactory.Requests.GetAll();
 }

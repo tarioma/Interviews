@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 
 namespace Interviews.Domain.Entities.Employees;
 
@@ -7,43 +6,32 @@ public class Employee
 {
     internal const int MaxNameLength = 100;
 
-    internal Employee(Guid id, string name, EmailAddress emailAddress, Guid roleId)
+    internal Employee(Guid id, string name, EmailAddress emailAddress, Guid roleId, AuthData authData)
     {
         Guard.Against.Default(id);
+        Guard.Against.NullOrWhiteSpace(name);
+        Guard.Against.StringTooLong(name, MaxNameLength);
+        Guard.Against.Null(emailAddress);
         Guard.Against.Default(roleId);
+        Guard.Against.Null(authData);
 
         Id = id;
-        SetName(name);
-        SetEmailAddress(emailAddress);
+        Name = name;
+        EmailAddress = emailAddress;
         RoleId = roleId;
+        AuthData = authData;
     }
 
     public Guid Id { get; }
-    public string Name { get; private set; }
-    public EmailAddress EmailAddress { get; private set; }
+    public string Name { get; }
+    public EmailAddress EmailAddress { get; }
     public Guid RoleId { get; }
+    public AuthData AuthData { get; }
 
-    public static Employee Create(string name, EmailAddress emailAddress, Guid roleId)
+    public static Employee Create(string name, EmailAddress emailAddress, Guid roleId, AuthData authData)
     {
         var id = Guid.NewGuid();
 
-        return new Employee(id, name, emailAddress, roleId);
-    }
-
-    [MemberNotNull(nameof(Name))]
-    public void SetName(string name)
-    {
-        Guard.Against.NullOrWhiteSpace(name);
-        Guard.Against.StringTooLong(name, MaxNameLength);
-
-        Name = name;
-    }
-
-    [MemberNotNull(nameof(EmailAddress))]
-    public void SetEmailAddress(EmailAddress emailAddress)
-    {
-        Guard.Against.Null(emailAddress);
-
-        EmailAddress = emailAddress;
+        return new Employee(id, name, emailAddress, roleId, authData);
     }
 }

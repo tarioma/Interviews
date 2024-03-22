@@ -23,12 +23,12 @@ public class WorkflowStepTests
     public void Init_CorrectParamsWithoutEmployeeId_SuccessInit(object? employeeId)
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var status = Status.Pending;
         Guid? certainEmployeeId = employeeId is null ? null : Guid.Empty;
         var roleId = _fixture.Create<Guid>();
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         var workflowStep = new WorkflowStep(name, order, status, certainEmployeeId, roleId, comment);
@@ -48,12 +48,12 @@ public class WorkflowStepTests
     public void Init_CorrectParamsWithoutRoleId_SuccessInit(object? roleId)
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var status = Status.Pending;
         var employeeId = _fixture.Create<Guid>();
         Guid? certainRoleId = roleId is null ? null : Guid.Empty;
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         var workflowStep = new WorkflowStep(name, order, status, employeeId, certainRoleId, comment);
@@ -75,7 +75,7 @@ public class WorkflowStepTests
     public void Init_WithoutEmployeeIdAndRoleId_ThrowsArgumentException(object? employeeId, object? roleId)
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var status = Status.Pending;
         Guid? certainEmployeeId = employeeId is null ? null : Guid.Empty;
@@ -94,12 +94,12 @@ public class WorkflowStepTests
     public void Init_EmployeeIdAndRoleIdDefined_ThrowsArgumentException()
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var status = Status.Pending;
         var employeeId = _fixture.Create<Guid>();
         var roleId = _fixture.Create<Guid>();
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         var action = () => new WorkflowStep(name, order, status, employeeId, roleId, comment);
@@ -119,7 +119,7 @@ public class WorkflowStepTests
         var status = Status.Pending;
         var employeeId = _fixture.Create<Guid>();
         Guid? roleId = Guid.Empty;
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         var action = () => new WorkflowStep(name!, order, status, employeeId, roleId, comment);
@@ -139,7 +139,7 @@ public class WorkflowStepTests
         var status = Status.Pending;
         var employeeId = _fixture.Create<Guid>();
         Guid? roleId = Guid.Empty;
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         var action = () => new WorkflowStep(name, order, status, employeeId, roleId, comment);
@@ -154,12 +154,12 @@ public class WorkflowStepTests
     public void Init_NegativeOrder_ThrowsArgumentException()
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = -1;
         var status = Status.Pending;
         var employeeId = _fixture.Create<Guid>();
         Guid? roleId = Guid.Empty;
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         var action = () => new WorkflowStep(name, order, status, employeeId, roleId, comment);
@@ -174,12 +174,12 @@ public class WorkflowStepTests
     public void Init_DefaultStatus_ThrowsArgumentException()
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var status = default(Status);
         var employeeId = _fixture.Create<Guid>();
         Guid? roleId = Guid.Empty;
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         var action = () => new WorkflowStep(name, order, status, employeeId, roleId, comment);
@@ -196,7 +196,7 @@ public class WorkflowStepTests
     public void Init_EmptyOrWhiteSpaceComment_ThrowsArgumentException(string comment)
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var status = Status.Pending;
         var employeeId = _fixture.Create<Guid>();
@@ -215,7 +215,7 @@ public class WorkflowStepTests
     public void Init_TooLongComment_ThrowsArgumentException()
     {
         // Arrange
-        var name = _fixture.GenerateString(WorkflowStep.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var status = Status.Pending;
         var employeeId = _fixture.Create<Guid>();
@@ -236,7 +236,7 @@ public class WorkflowStepTests
     {
         // Arrange
         var workflowStepTemplate = _fixture.Create<WorkflowStepTemplate>();
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
@@ -255,7 +255,7 @@ public class WorkflowStepTests
     {
         // Arrange
         WorkflowStepTemplate workflowStepTemplate = null!;
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         var action = () => WorkflowStep.Create(workflowStepTemplate, comment);
@@ -271,10 +271,10 @@ public class WorkflowStepTests
     {
         // Arrange
         var employee = _fixture.Create<Employee>();
-        var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var workflowStepTemplate = new WorkflowStepTemplate(name, order, employeeId: employee.Id);
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
 
         // Act
@@ -290,10 +290,10 @@ public class WorkflowStepTests
     {
         // Arrange
         var employee = _fixture.Create<Employee>();
-        var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var workflowStepTemplate = new WorkflowStepTemplate(name, order, roleId: employee.RoleId);
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
 
         // Act
@@ -310,7 +310,7 @@ public class WorkflowStepTests
         // Arrange
         var employee = _fixture.Create<Employee>();
         var workflowStepTemplate = _fixture.Create<WorkflowStepTemplate>();
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
 
         // Act
@@ -327,10 +327,10 @@ public class WorkflowStepTests
     {
         // Arrange
         var employee = _fixture.Create<Employee>();
-        var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var workflowStepTemplate = new WorkflowStepTemplate(name, order, employeeId: employee.Id);
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
 
         // Act
@@ -346,10 +346,10 @@ public class WorkflowStepTests
     {
         // Arrange
         var employee = _fixture.Create<Employee>();
-        var name = _fixture.GenerateString(WorkflowStepTemplate.MaxNameLength);
+        var name = _fixture.Create<string>();
         var order = _fixture.Create<int>();
         var workflowStepTemplate = new WorkflowStepTemplate(name, order, roleId: employee.RoleId);
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
 
         // Act
@@ -366,7 +366,7 @@ public class WorkflowStepTests
         // Arrange
         var employee = _fixture.Create<Employee>();
         var workflowStepTemplate = _fixture.Create<WorkflowStepTemplate>();
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
         var workflowStep = WorkflowStep.Create(workflowStepTemplate, comment);
 
         // Act

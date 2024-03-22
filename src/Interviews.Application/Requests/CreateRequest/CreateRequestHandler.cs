@@ -1,18 +1,19 @@
-﻿using Ardalis.GuardClauses;
-using Interviews.Application.Repositories;
+﻿using Interviews.Application.Repositories;
 using Interviews.Domain.Entities.Requests;
 
 namespace Interviews.Application.Requests.CreateRequest;
 
-public class CreateRequestHandler(ITenantRepository tenant) : Handler(tenant)
+public class CreateRequestHandler : Handler<CreateRequestCommand, Guid>
 {
-    public Guid Handle(CreateRequestCommand command)
+    public CreateRequestHandler(ITenantFactory tenantFactory) : base(tenantFactory)
     {
-        Guard.Against.Null(command);
+    }
 
+    public override Guid Handle(CreateRequestCommand command)
+    {
         var request = Request.Create(command.Document, command.Workflow, command.EmployeeId);
-        Tenant.Requests.Create(request);
-        Tenant.Commit();
+        TenantFactory.Requests.Create(request);
+        TenantFactory.Commit();
 
         return request.Id;
     }

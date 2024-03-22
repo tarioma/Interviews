@@ -21,7 +21,7 @@ public class WorkflowTests
     {
         // Arrange
         var workflowTemplateId = _fixture.Create<Guid>();
-        var name = _fixture.GenerateString(Workflow.MaxNameLength);
+        var name = _fixture.Create<string>();
         var steps = _fixture.GenerateWorkflowStepsWithEmployeeId();
 
         // Act
@@ -38,7 +38,7 @@ public class WorkflowTests
     {
         // Arrange
         var workflowTemplateId = Guid.Empty;
-        var name = _fixture.GenerateString(Workflow.MaxNameLength);
+        var name = _fixture.Create<string>();
         var steps = _fixture.GenerateWorkflowStepsWithEmployeeId();
 
         // Act
@@ -93,7 +93,7 @@ public class WorkflowTests
     {
         // Arrange
         var workflowTemplateId = _fixture.Create<Guid>();
-        var name = _fixture.GenerateString(Workflow.MaxNameLength);
+        var name = _fixture.Create<string>();
 
         // Act
         var action = () => new Workflow(workflowTemplateId, name, steps);
@@ -158,7 +158,7 @@ public class WorkflowTests
         var workflow = _fixture.Create<Workflow>();
         var step = workflow.Steps.First();
         var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         workflow.Approve(employee, comment);
@@ -192,7 +192,7 @@ public class WorkflowTests
         var workflow = _fixture.Create<Workflow>();
         var step = workflow.Steps.First();
         var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         workflow.Reject(employee, comment);

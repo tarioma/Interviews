@@ -21,7 +21,7 @@ public class DocumentTests
     public void Init_CorrectParams_SuccessInit()
     {
         // Arrange
-        var name = _fixture.GenerateString(Employee.MaxNameLength);
+        var name = _fixture.Create<string>();
         var dateOfBirth = _fixture.GenerateDateOfBirth(Document.MinAcceptableAge);
         var emailAddress = _fixture.Create<EmailAddress>();
 
@@ -74,7 +74,7 @@ public class DocumentTests
     public void Init_DefaultDateOfBirth_ThrowsArgumentException()
     {
         // Arrange
-        var name = _fixture.GenerateString(Employee.MaxNameLength);
+        var name = _fixture.Create<string>();
         var dateOfBirth = default(DateOnly);
         var emailAddress = _fixture.Create<EmailAddress>();
 
@@ -91,7 +91,7 @@ public class DocumentTests
     public void Init_DateOfBirthIsTooLate_ThrowsArgumentException()
     {
         // Arrange
-        var name = _fixture.GenerateString(Employee.MaxNameLength);
+        var name = _fixture.Create<string>();
         var dateOfBirth = _fixture.GenerateDateOfBirth(Document.MinAcceptableAge - 1);
         var emailAddress = _fixture.Create<EmailAddress>();
 
@@ -108,7 +108,7 @@ public class DocumentTests
     public void Init_NullEmailAddress_ThrowsArgumentNullException()
     {
         // Arrange
-        var name = _fixture.GenerateString(Employee.MaxNameLength);
+        var name = _fixture.Create<string>();
         var dateOfBirth = _fixture.GenerateDateOfBirth(Document.MinAcceptableAge);
         EmailAddress emailAddress = null!;
 

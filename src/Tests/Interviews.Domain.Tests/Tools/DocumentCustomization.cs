@@ -11,9 +11,8 @@ public class DocumentCustomization : ICustomization
     {
         fixture.Customize(new EmailAddressCustomization());
 
-        var name = fixture.GenerateString(Employee.MaxNameLength);
-        var dateOfBirth = DateOnly.FromDateTime(
-            DateTime.UtcNow.AddYears(-Document.MaxNameLength));
+        var name = fixture.Create<string>();
+        var dateOfBirth = DateOnly.FromDateTime(DateTime.UtcNow.AddYears(-Document.MaxNameLength));
         var emailAddress = fixture.Create<EmailAddress>();
 
         fixture.Customize<Document>(composer =>

@@ -14,7 +14,7 @@ public class RoleTests
     {
         // Arrange
         var id = _fixture.Create<Guid>();
-        var name = _fixture.GenerateString(Role.MaxNameLength);
+        var name = _fixture.Create<string>();
 
         // Act
         var role = new Role(id, name);
@@ -29,7 +29,7 @@ public class RoleTests
     {
         // Arrange
         var id = Guid.Empty;
-        var name = _fixture.GenerateString(Role.MaxNameLength);
+        var name = _fixture.Create<string>();
 
         // Act
         var action = () => new Role(id, name);
@@ -40,11 +40,45 @@ public class RoleTests
             .WithParameterName(nameof(id));
     }
 
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Init_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string? name)
+    {
+        // Arrange
+        var id = _fixture.Create<Guid>();
+
+        // Act
+        var action = () => new Role(id, name!);
+
+        // Assert
+        action.Should()
+            .Throw<ArgumentException>()
+            .WithParameterName(nameof(name));
+    }
+
+    [Fact]
+    public void Init_VeryLongName_ThrowsArgumentException()
+    {
+        // Arrange
+        var id = _fixture.Create<Guid>();
+        var name = _fixture.GenerateString(Role.MaxNameLength + 1);
+
+        // Act
+        var action = () => new Role(id, name);
+
+        // Assert
+        action.Should()
+            .Throw<ArgumentException>()
+            .WithParameterName(nameof(name));
+    }
+
     [Fact]
     public void Create_CorrectParams_SuccessCreateAndReturn()
     {
         // Arrange
-        var name = _fixture.GenerateString(Role.MaxNameLength);
+        var name = _fixture.Create<string>();
 
         // Act
         var role = Role.Create(name);
@@ -52,53 +86,5 @@ public class RoleTests
         // Assert
         role.Id.Should().NotBeEmpty();
         role.Name.Should().Be(name);
-    }
-
-    [Fact]
-    public void SetName_ValidName_NameChangedSuccessfully()
-    {
-        // Arrange
-        var role = _fixture.Create<Role>();
-        var name = _fixture.GenerateString(Role.MaxNameLength);
-
-        // Act
-        role.SetName(name);
-
-        // Assert
-        role.Name.Should().Be(name);
-    }
-
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    public void SetName_NullEmptyOrWhiteSpaceName_ThrowsArgumentException(string? name)
-    {
-        // Arrange
-        var role = _fixture.Create<Role>();
-
-        // Act
-        var action = () => role.SetName(name!);
-
-        // Assert
-        action.Should()
-            .Throw<ArgumentException>()
-            .WithParameterName(nameof(name));
-    }
-
-    [Fact]
-    public void SetName_VeryLongName_ThrowsArgumentException()
-    {
-        // Arrange
-        var role = _fixture.Create<Role>();
-        var name = _fixture.GenerateString(Role.MaxNameLength + 1);
-
-        // Act
-        var action = () => role.SetName(name);
-
-        // Assert
-        action.Should()
-            .Throw<ArgumentException>()
-            .WithParameterName(nameof(name));
     }
 }

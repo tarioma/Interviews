@@ -1,15 +1,15 @@
-﻿using Ardalis.GuardClauses;
-using Interviews.Application.Repositories;
+﻿using Interviews.Application.Repositories;
 using Interviews.Domain.Entities.Employees;
 
 namespace Interviews.Application.Employees.GetEmployeeById;
 
-public class GetEmployeeByIdHandler(ITenantRepository tenant) : Handler(tenant)
+public class GetEmployeeByIdHandler : Handler<GetEmployeeByIdQuery, Employee>
 {
-    public Employee Handle(GetEmployeeByIdQuery query)
+    public GetEmployeeByIdHandler(ITenantFactory tenantFactory) : base(tenantFactory)
     {
-        Guard.Against.Null(query);
-
-        return Tenant.Employees.GetById(query.EmployeeId);
     }
+
+    public override Employee Handle(GetEmployeeByIdQuery command) =>
+        TenantFactory.Employees.TryGetById(command.EmployeeId)
+        ?? throw new Exception($"Нет {nameof(Employee)} с таким id.");
 }

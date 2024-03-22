@@ -1,3 +1,3 @@
 ﻿namespace Interviews.Application.WorkflowTemplates.GetWorkflowTemplateId;
 
-public record GetWorkflowTemplateByIdQuery(Guid RoleId);
+public record GetWorkflowTemplateByIdQuery(Guid WorkflowTemplateId);

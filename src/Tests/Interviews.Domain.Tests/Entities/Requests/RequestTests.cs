@@ -13,10 +13,8 @@ public class RequestTests
     public RequestTests()
     {
         _fixture = new Fixture();
-        _fixture.Customize(new CompositeCustomization(
-            new DocumentCustomization(),
-            new WorkflowTemplateCustomization()
-        ));
+        _fixture.Customize(new DocumentCustomization());
+        _fixture.Customize(new WorkflowTemplateCustomization());
     }
 
     [Fact]
@@ -169,7 +167,7 @@ public class RequestTests
         var request = _fixture.Create<Request>();
         var step = request.Workflow.Steps.First();
         var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         request.Approve(employee, comment);
@@ -191,7 +189,7 @@ public class RequestTests
         var request = Request.Create(document, workflow, employeeId);
         var step = request.Workflow.Steps.First();
         var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         request.Approve(employee, comment);
@@ -210,7 +208,7 @@ public class RequestTests
         var request = _fixture.Create<Request>();
         var step = request.Workflow.Steps.First();
         var employee = _fixture.GenerateEmployeeWithId((Guid)step.EmployeeId!);
-        var comment = _fixture.GenerateString(WorkflowStep.MaxCommentLength);
+        var comment = _fixture.Create<string>();
 
         // Act
         request.Reject(employee, comment);
