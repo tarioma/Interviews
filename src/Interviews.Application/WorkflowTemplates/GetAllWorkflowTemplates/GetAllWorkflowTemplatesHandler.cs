@@ -1,4 +1,5 @@
-﻿using Interviews.Application.Repositories;
+﻿using Ardalis.GuardClauses;
+using Interviews.Application.Repositories;
 using Interviews.Domain.Entities.WorkflowTemplates;
 
 namespace Interviews.Application.WorkflowTemplates.GetAllWorkflowTemplates;
@@ -9,6 +10,10 @@ public class GetAllWorkflowTemplatesHandler : Handler<GetAllWorkflowTemplatesQue
     {
     }
 
-    public override IEnumerable<WorkflowTemplate> Handle(GetAllWorkflowTemplatesQuery command) =>
-        TenantFactory.WorkflowTemplates.GetAll();
+    public override IEnumerable<WorkflowTemplate> Handle(GetAllWorkflowTemplatesQuery command)
+    {
+        Guard.Against.Null(command);
+
+        return TenantFactory.WorkflowTemplates.GetAll();
+    }
 }

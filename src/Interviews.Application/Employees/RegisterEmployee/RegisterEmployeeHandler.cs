@@ -1,4 +1,5 @@
-﻿using Interviews.Application.Repositories;
+﻿using Ardalis.GuardClauses;
+using Interviews.Application.Repositories;
 using Interviews.Domain.Entities.Employees;
 
 namespace Interviews.Application.Employees.RegisterEmployee;
@@ -11,6 +12,8 @@ public class RegisterEmployeeHandler : Handler<RegisterEmployeeCommand, Guid>
 
     public override Guid Handle(RegisterEmployeeCommand command)
     {
+        Guard.Against.Null(command);
+
         if (TenantFactory.Employees.TryGetByEmail(command.EmailAddress) is not null)
         {
             throw new Exception($"Нет {nameof(Employee)} с таким email-адресом.");

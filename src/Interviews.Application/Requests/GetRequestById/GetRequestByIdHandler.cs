@@ -1,4 +1,5 @@
-﻿using Interviews.Application.Repositories;
+﻿using Ardalis.GuardClauses;
+using Interviews.Application.Repositories;
 using Interviews.Domain.Entities.Requests;
 
 namespace Interviews.Application.Requests.GetRequestById;
@@ -9,7 +10,17 @@ public class GetRequestByIdHandler : Handler<GetRequestByIdQuery, Request>
     {
     }
 
-    public override Request Handle(GetRequestByIdQuery command) =>
-        TenantFactory.Requests.TryGetById(command.RequestId)
-        ?? throw new Exception($"{nameof(Request)} с таким id не найден.");
+    public override Request Handle(GetRequestByIdQuery command)
+    {
+        Guard.Against.Null(command);
+
+        var request = TenantFactory.Requests.TryGetById(command.RequestId);
+
+        if (request is null)
+        {
+            throw new Exception($"{nameof(Request)} с таким id не найден.");
+        }
+
+        return request;
+    }
 }

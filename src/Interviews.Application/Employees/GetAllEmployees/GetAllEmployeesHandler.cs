@@ -1,4 +1,5 @@
-﻿using Interviews.Application.Repositories;
+﻿using Ardalis.GuardClauses;
+using Interviews.Application.Repositories;
 using Interviews.Domain.Entities.Employees;
 
 namespace Interviews.Application.Employees.GetAllEmployees;
@@ -9,6 +10,10 @@ public class GetAllEmployeesHandler : Handler<GetAllEmployeesQuery, IEnumerable<
     {
     }
 
-    public override IEnumerable<Employee> Handle(GetAllEmployeesQuery command) =>
-        TenantFactory.Employees.GetAll();
+    public override IEnumerable<Employee> Handle(GetAllEmployeesQuery command)
+    {
+        Guard.Against.Null(command);
+
+        return TenantFactory.Employees.GetAll();
+    }
 }

@@ -13,8 +13,14 @@ public class RegisterEmployeeHandler : Handler<RegisterEmployeeCommand, Guid>
 
     public override Guid Handle(RegisterEmployeeCommand command)
     {
-        var employee = TenantFactory.Employees.TryGetByEmail(command.EmailAddress)
-                       ?? throw new Exception($"Нет {nameof(Employee)} с таким email-адресом.");
+        Guard.Against.Null(command);
+
+        var employee = TenantFactory.Employees.TryGetByEmail(command.EmailAddress);
+
+        if (employee is null)
+        {
+            throw new Exception($"Нет {nameof(Employee)} с таким email-адресом.");
+        }
 
         if (employee.AuthData.PasswordHash != command.AuthData.PasswordHash)
         {

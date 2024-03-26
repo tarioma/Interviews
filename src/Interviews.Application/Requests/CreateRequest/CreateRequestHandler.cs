@@ -1,4 +1,5 @@
-﻿using Interviews.Application.Repositories;
+﻿using Ardalis.GuardClauses;
+using Interviews.Application.Repositories;
 using Interviews.Domain.Entities.Requests;
 
 namespace Interviews.Application.Requests.CreateRequest;
@@ -11,6 +12,8 @@ public class CreateRequestHandler : Handler<CreateRequestCommand, Guid>
 
     public override Guid Handle(CreateRequestCommand command)
     {
+        Guard.Against.Null(command);
+
         var request = Request.Create(command.Document, command.Workflow, command.EmployeeId);
         TenantFactory.Requests.Create(request);
         TenantFactory.Commit();
